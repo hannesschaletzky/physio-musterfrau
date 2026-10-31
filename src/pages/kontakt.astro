@@ -1,0 +1,354 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Arrow from '../components/Arrow.astro';
+import { praxis } from '../data/praxis';
+import { leistungen } from '../data/leistungen';
+
+const tageszeiten = ['Vormittags', 'Mittags', 'Nachmittags', 'Abends'];
+---
+
+<BaseLayout
+  title="Kontakt & Terminanfrage"
+  description={`Termin anfragen bei ${praxis.name} in ${praxis.ort}: per Telefon, E-Mail oder Formular. Antwort innerhalb eines Werktags.`}
+>
+  <PageIntro
+    eyebrow="Kontakt"
+    title="Termin anfragen, <em>ganz einfach.</em>"
+    lead="Schreiben Sie uns, wann es Ihnen passt und worum es geht. Wir melden uns innerhalb eines Werktags mit einem Vorschlag."
+  />
+
+  <section class="container kontakt" aria-label="Kontaktmöglichkeiten und Formular">
+    <div class="kontakt__info">
+      <div class="karte">
+        <h2 class="klein">Telefon</h2>
+        <a href={praxis.telefonHref} class="gross">{praxis.telefon}</a>
+        <p>{praxis.telefonzeiten}. Außerhalb dieser Zeiten hören wir den Anrufbeantworter täglich ab.</p>
+      </div>
+      <div class="karte">
+        <h2 class="klein">E-Mail</h2>
+        <a href={`mailto:${praxis.email}`} class="gross gross--mail">{praxis.email}</a>
+      </div>
+      <div class="karte">
+        <h2 class="klein">Adresse</h2>
+        <address>
+          {praxis.strasse}<br />
+          {`${praxis.plz} ${praxis.ort}`}<br />
+          {praxis.lage}
+        </address>
+      </div>
+      <div class="karte">
+        <h2 class="klein">Öffnungszeiten</h2>
+        <dl class="zeiten">
+          {
+            praxis.oeffnungszeiten.map((o) => (
+              <div>
+                <dt>{o.tage}</dt>
+                <dd>{o.zeit}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+
+    <form class="formular" id="anfrage" method="post" novalidate aria-labelledby="formular-titel">
+      <h2 id="formular-titel" class="h3">Terminanfrage</h2>
+      <fieldset class="feld">
+        <legend>Haben Sie ein Rezept?</legend>
+        <div class="chips">
+          {
+            ['Ja, von der Kasse', 'Ja, privat', 'Nein, Selbstzahler'].map((r, i) => (
+              <label class="chip">
+                <input type="radio" name="rezept" value={r} checked={i === 0} />
+                <span>{r}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+      <div class="feld">
+        <label for="leistung">Worum geht es?</label>
+        <select id="leistung" name="leistung">
+          <option value="">Weiß ich noch nicht</option>
+          {leistungen.map((l) => <option value={l.id}>{l.titel}</option>)}
+        </select>
+      </div>
+      <fieldset class="feld">
+        <legend>Wann passt es Ihnen meistens? <span class="optional">(mehrere möglich)</span></legend>
+        <div class="chips">
+          {
+            tageszeiten.map((t) => (
+              <label class="chip">
+                <input type="checkbox" name="zeit" value={t} />
+                <span>{t}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+      <div class="feld">
+        <label for="name">Name <span aria-hidden="true">*</span></label>
+        <input id="name" name="name" type="text" autocomplete="name" required />
+      </div>
+      <div class="feld feld--halb">
+        <label for="telefon">Telefon <span aria-hidden="true">*</span></label>
+        <input id="telefon" name="telefon" type="tel" autocomplete="tel" required />
+      </div>
+      <div class="feld feld--halb">
+        <label for="email">E-Mail <span class="optional">(optional)</span></label>
+        <input id="email" name="email" type="email" autocomplete="email" />
+      </div>
+      <div class="feld">
+        <label for="nachricht">Nachricht <span class="optional">(optional)</span></label>
+        <textarea id="nachricht" name="nachricht" rows="4" placeholder="Zum Beispiel: Schulter rechts, seit drei Wochen. Am liebsten dienstags."
+        ></textarea>
+        <p class="feldhinweis">Bitte keine Befunde oder Diagnosen schicken. Die besprechen wir lieber persönlich.</p>
+      </div>
+      <div class="feld">
+        <label class="check">
+          <input type="checkbox" name="datenschutz" required />
+          <span
+            >Ich bin einverstanden, dass meine Angaben zur Terminvergabe gespeichert werden. Mehr dazu in der <a href="/datenschutz/"
+              >Datenschutzerklärung</a
+            >. <span aria-hidden="true">*</span></span
+          >
+        </label>
+      </div>
+      <div class="feld absenden">
+        <button type="submit" class="btn btn--voll">Anfrage senden <Arrow /></button>
+        <p class="feldhinweis">Beispielseite: Das Formular verschickt keine Daten.</p>
+      </div>
+      <p class="meldung" role="status" aria-live="polite" hidden></p>
+    </form>
+  </section>
+
+  <script>
+    const form = document.querySelector<HTMLFormElement>('#anfrage');
+    const meldung = form?.querySelector<HTMLParagraphElement>('.meldung');
+
+    // Von der Leistungsseite kommend: Leistung vorauswählen
+    const leistung = new URLSearchParams(location.search).get('leistung');
+    const auswahl = form?.querySelector<HTMLSelectElement>('#leistung');
+    if (leistung && auswahl && [...auswahl.options].some((o) => o.value === leistung)) {
+      auswahl.value = leistung;
+    }
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!meldung) return;
+      form.classList.add('geprueft');
+      if (!form.checkValidity()) {
+        meldung.hidden = false;
+        meldung.dataset.art = 'fehler';
+        meldung.textContent = 'Bitte füllen Sie alle Pflichtfelder aus.';
+        form.querySelector<HTMLElement>(':invalid')?.focus();
+        return;
+      }
+      meldung.hidden = false;
+      meldung.dataset.art = 'ok';
+      meldung.textContent =
+        'Vielen Dank! In einer echten Praxis wäre Ihre Anfrage jetzt am Empfang. Dies ist ein Beispielprojekt, es wurden keine Daten übertragen.';
+      form.reset();
+      form.classList.remove('geprueft');
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .kontakt {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(2rem, 1rem + 3vw, 4rem);
+    align-items: start;
+    padding-bottom: var(--section);
+  }
+  .kontakt__info {
+    display: grid;
+    gap: 1rem;
+  }
+  .kontakt__info .karte {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .klein {
+    font-family: var(--font-body-stack);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .gross {
+    font-family: var(--font-display-stack);
+    font-size: var(--step-2);
+    line-height: 1.2;
+    text-decoration: none;
+    color: var(--salbei-2);
+  }
+  .gross--mail {
+    font-size: var(--step-1);
+    overflow-wrap: anywhere;
+  }
+  .gross:hover {
+    text-decoration: underline;
+  }
+  .kontakt__info p {
+    color: var(--ink-2);
+    font-size: 0.95rem;
+  }
+  address {
+    font-style: normal;
+  }
+
+  .formular {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 1.25rem;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+    background: var(--weiss);
+    border-radius: var(--radius-gross);
+    box-shadow: 0 1.5rem 3rem -2rem rgb(29 41 37 / 0.3);
+  }
+  .formular > h2 {
+    grid-column: 1 / -1;
+  }
+  .feld {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 0.5rem;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .feld--halb {
+    grid-column: span 1;
+  }
+  label,
+  legend {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  legend {
+    margin-bottom: 0.75rem;
+    padding: 0;
+  }
+  .optional {
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+  input[type='text'],
+  input[type='email'],
+  input[type='tel'],
+  select,
+  textarea {
+    width: 100%;
+    font: inherit;
+    color: inherit;
+    padding: 0.8rem 1rem;
+    background: var(--sand);
+    border: 1px solid #c5ccc4;
+    border-radius: 0.75rem;
+    transition:
+      border-color 0.2s var(--ease),
+      box-shadow 0.2s var(--ease);
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--salbei);
+    box-shadow: 0 0 0 3px rgb(61 107 90 / 0.2);
+  }
+  textarea {
+    resize: vertical;
+    min-height: 7rem;
+  }
+  .geprueft :invalid {
+    border-color: #b3403a;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .chip {
+    position: relative;
+    font-weight: 400;
+  }
+  .chip input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .chip span {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid #c5ccc4;
+    border-radius: 999px;
+    font-size: 0.95rem;
+  }
+  .chip:hover span {
+    border-color: var(--salbei);
+  }
+  .chip input:checked + span {
+    background: var(--salbei);
+    border-color: var(--salbei);
+    color: #fff;
+  }
+  .chip input:focus-visible + span {
+    outline: 3px solid var(--salbei);
+    outline-offset: 3px;
+  }
+  .check {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    font-weight: 400;
+    color: var(--ink-2);
+    align-items: start;
+  }
+  .check input {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.25rem;
+    accent-color: var(--salbei);
+  }
+  .check a {
+    color: var(--salbei-2);
+  }
+  .feldhinweis {
+    font-size: 0.85rem;
+    color: var(--ink-3);
+  }
+  .absenden {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+  .meldung {
+    grid-column: 1 / -1;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    background: var(--salbei-hell);
+    color: var(--salbei-3);
+  }
+  .meldung[data-art='fehler'] {
+    background: #f8e1df;
+    color: #8a2c26;
+  }
+
+  @media (max-width: 60rem) {
+    .kontakt {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 34rem) {
+    .feld--halb {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

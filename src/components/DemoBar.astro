@@ -1,0 +1,26 @@
+---
+import { ersteller } from '../data/praxis';
+---
+
+<aside class="demobar" aria-label="Hinweis zum Beispielprojekt">
+  <p class="container">
+    Beispielprojekt: Die Praxis ist erfunden. Website gestaltet und entwickelt von{' '}
+    <a href={ersteller.url}>{ersteller.name}</a>
+  </p>
+</aside>
+
+<style>
+  .demobar {
+    background: var(--salbei-3);
+    color: var(--on-salbei-2);
+    font-size: 0.8rem;
+  }
+  p {
+    padding-block: 0.55rem;
+    text-align: center;
+  }
+  a {
+    color: var(--on-salbei);
+    font-weight: 600;
+  }
+</style>

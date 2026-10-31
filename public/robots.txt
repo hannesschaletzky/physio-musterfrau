@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://physio-musterfrau.hschaletzky.com/sitemap-index.xml

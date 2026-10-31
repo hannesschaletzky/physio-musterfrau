@@ -1,0 +1,220 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import TerminCta from '../components/TerminCta.astro';
+import Arrow from '../components/Arrow.astro';
+import { euro } from '../data/praxis';
+import { leistungen } from '../data/leistungen';
+---
+
+<BaseLayout
+  title="Leistungen"
+  description="Krankengymnastik, Manuelle Therapie, Gerätetraining, Lymphdrainage, Massage und Rückenkurs: alle Leistungen und Preise für Selbstzahler."
+>
+  <PageIntro
+    eyebrow="Leistungen"
+    title="Behandlung, die zu Ihnen <em>passt.</em>"
+    lead="Welche Therapie sinnvoll ist, hängt von Ihren Beschwerden ab und davon, was Sie im Alltag wieder können möchten. Hier finden Sie, was wir anbieten. Den Rest besprechen wir beim ersten Termin."
+  />
+
+  <nav class="container sprung" aria-label="Leistungen auf dieser Seite">
+    <ul>
+      {
+        leistungen.map((l) => (
+          <li>
+            <a href={`#${l.id}`}>{l.titel}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <div class="container liste">
+    {
+      leistungen.map((l, i) => (
+        <section id={l.id} class="eintrag" aria-labelledby={`${l.id}-titel`}>
+          <div class="eintrag__bild img-frame">
+            <Picture
+              src={l.bild}
+              alt={l.alt}
+              widths={[420, 640, 860]}
+              sizes="(min-width: 60rem) 34vw, 92vw"
+              formats={['avif', 'webp']}
+              loading={i === 0 ? 'eager' : 'lazy'}
+            />
+          </div>
+          <div class="eintrag__text">
+            <h2 id={`${l.id}-titel`} class="h3">
+              {l.titel}
+            </h2>
+            <p class="eintrag__kurz">{l.kurz}</p>
+            <p>{l.text}</p>
+            <div class="eintrag__details">
+              <div>
+                <h3 class="klein">Hilft zum Beispiel bei</h3>
+                <ul class="haken">
+                  {l.hilftBei.map((h) => (
+                    <li>{h}</li>
+                  ))}
+                </ul>
+              </div>
+              <dl class="eckdaten">
+                <div>
+                  <dt>Dauer</dt>
+                  <dd>{l.dauer}</dd>
+                </div>
+                <div>
+                  <dt>{l.rezept ? 'Mit Rezept' : 'Zuschuss'}</dt>
+                  <dd>{l.rezept ? 'Abrechnung mit der Kasse' : 'durch viele Krankenkassen'}</dd>
+                </div>
+                <div>
+                  <dt>Selbstzahler</dt>
+                  <dd class="zahlen">{l.rezept ? euro(l.preis) : `${euro(l.preis)} für den Kurs`}</dd>
+                </div>
+              </dl>
+            </div>
+            <a href={`/kontakt/?leistung=${l.id}`} class="link-pfeil">
+              Termin für {l.titel} anfragen <Arrow />
+            </a>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="container hinweis-wrap" aria-label="Hinweis zu Hausbesuchen">
+    <div class="hinweis hell">
+      <h2 class="h3">Hausbesuche</h2>
+      <p>
+        Wenn Sie nicht in die Praxis kommen können, kommen wir zu Ihnen: im Umkreis von zehn Kilometern, auch ins Pflegeheim. Dafür
+        braucht es den Vermerk „Hausbesuch“ auf dem Rezept.
+      </p>
+    </div>
+  </section>
+
+  <TerminCta />
+</BaseLayout>
+
+<style>
+  .sprung ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 clamp(2rem, 1rem + 3vw, 3.5rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .sprung a {
+    display: block;
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--salbei-mittel);
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  .sprung a:hover {
+    background: var(--salbei-hell);
+    border-color: var(--salbei);
+  }
+
+  .liste {
+    display: grid;
+    gap: clamp(3.5rem, 2rem + 5vw, 6rem);
+    padding-bottom: var(--section);
+  }
+  .eintrag {
+    display: grid;
+    grid-template-columns: 0.8fr 1fr;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+    scroll-margin-top: 7rem;
+  }
+  .eintrag:nth-child(even) {
+    grid-template-columns: 1fr 0.8fr;
+  }
+  .eintrag:nth-child(even) .eintrag__bild {
+    order: 2;
+  }
+  .eintrag__bild {
+    aspect-ratio: 4 / 3;
+  }
+  .eintrag__text {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+  .eintrag__text > p {
+    color: var(--ink-2);
+  }
+  .eintrag__kurz {
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  .eintrag__details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2.5rem;
+    margin-top: 0.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .klein {
+    font-family: var(--font-body-stack);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 0.9rem;
+  }
+  .eckdaten {
+    margin: 0;
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+  }
+  .eckdaten dt {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+  .eckdaten dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .hinweis-wrap {
+    padding-bottom: var(--section);
+  }
+  .hinweis {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr;
+    gap: 1rem 3rem;
+    align-items: baseline;
+    padding: clamp(1.75rem, 1rem + 3vw, 3rem);
+    border-radius: var(--radius-gross);
+  }
+  .hinweis p {
+    color: var(--ink-2);
+    max-width: 40em;
+  }
+
+  @media (max-width: 60rem) {
+    .eintrag,
+    .hinweis {
+      grid-template-columns: 1fr;
+    }
+    .eintrag:nth-child(even) .eintrag__bild {
+      order: 0;
+    }
+    .eintrag__bild {
+      max-width: 36rem;
+    }
+  }
+  @media (max-width: 34rem) {
+    .eintrag__details {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

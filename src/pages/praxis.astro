@@ -1,0 +1,275 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import TerminCta from '../components/TerminCta.astro';
+import { praxis } from '../data/praxis';
+import raumBild from '../assets/images/behandlungsraum.jpg';
+import wandBild from '../assets/images/trainingswand.jpg';
+import bandBild from '../assets/images/theraband.jpg';
+import hueftBild from '../assets/images/huefte.jpg';
+
+const team = [
+  {
+    name: praxis.inhaberin,
+    rolle: 'Physiotherapeutin, Inhaberin',
+    schwerpunkte: ['Manuelle Therapie', 'Lymphdrainage', 'Kiefergelenk'],
+    text: 'Seit 2009 Physiotherapeutin, seit 2014 mit eigener Praxis. Davor sechs Jahre in einer Rehaklinik für Orthopädie.',
+  },
+  {
+    name: 'Jonas Muster',
+    rolle: 'Physiotherapeut',
+    schwerpunkte: ['Gerätetraining', 'Sportphysiotherapie', 'nach Operationen'],
+    text: 'Betreut nebenher eine Fußballmannschaft im Ort und weiß, wie ungeduldig man nach einer Verletzung wird.',
+  },
+  {
+    name: 'Lea Beispiel',
+    rolle: 'Physiotherapeutin',
+    schwerpunkte: ['Krankengymnastik', 'Rückenkurs', 'Gleichgewicht im Alter'],
+    text: 'Leitet die Rückenkurse und macht die meisten Hausbesuche. Ihr Motto: kleine Übungen, jeden Tag.',
+  },
+  {
+    name: 'Sabine Probe',
+    rolle: 'Empfang und Organisation',
+    schwerpunkte: ['Termine', 'Rezepte', 'Abrechnung'],
+    text: 'Die erste Stimme am Telefon. Findet fast immer noch einen Termin, auch wenn der Kalender voll aussieht.',
+  },
+];
+
+const initialen = (name: string) =>
+  name
+    .split(' ')
+    .map((teil) => teil[0])
+    .join('');
+
+const raeume = [
+  {
+    bild: raumBild,
+    alt: 'Behandlungsraum mit höhenverstellbarer Liege und Blick ins Grüne',
+    titel: 'Drei Behandlungsräume',
+    text: 'Hell, ruhig und mit Tür statt Vorhang. Alle Liegen sind elektrisch höhenverstellbar.',
+  },
+  {
+    bild: wandBild,
+    alt: 'Ordentlich aufgehängte Trainingsgeräte an einer Holzwand',
+    titel: 'Trainingsraum',
+    text: 'Seilzug, Beinpresse, Hanteln und Kleingeräte für das Gerätetraining und die Kurse.',
+  },
+  {
+    bild: bandBild,
+    alt: 'Ein Therapeut zeigt einer Patientin eine Übung mit einem grünen Übungsstab',
+    titel: 'Übungen für zuhause',
+    text: 'Was Sie bei uns lernen, bekommen Sie als Übungsblatt mit Fotos mit, auf Wunsch auch per E-Mail.',
+  },
+];
+
+const ausstattung = [
+  'Aufzug und stufenloser Zugang',
+  'Parkplätze im Hof, Bushaltestelle vor der Tür',
+  'Barrierefreies WC',
+  'Umkleide mit Spinden',
+  'Wasser und Tee im Wartebereich',
+];
+---
+
+<BaseLayout
+  title="Praxis & Team"
+  description="Vier Menschen, drei Behandlungsräume und ein Trainingsraum mitten in Musterstadt. Barrierefrei mit Aufzug und Parkplätzen im Hof."
+  image={raumBild}
+>
+  <PageIntro
+    eyebrow="Praxis & Team"
+    title="Klein, persönlich und <em>mitten im Ort.</em>"
+    lead={`Seit ${praxis.gruendung} behandeln wir in der ${praxis.strasse}. Bei uns haben Sie in der Regel die ganze Behandlungsserie dieselbe Therapeutin oder denselben Therapeuten.`}
+    bild={hueftBild}
+    alt="Ein Therapeut stützt mit beiden Händen die Hüfte eines Patienten bei einer Dehnung"
+  />
+
+  <section class="section weiss" aria-labelledby="team-titel">
+    <div class="container">
+      <div class="kopf">
+        <span class="eyebrow">Team</span>
+        <h2 id="team-titel" class="h2">Wer Sie behandelt</h2>
+      </div>
+      <ul class="team">
+        {
+          team.map((p) => (
+            <li class="person karte reveal">
+              <span class="person__initialen" aria-hidden="true">
+                {initialen(p.name)}
+              </span>
+              <div>
+                <h3 class="person__name">{p.name}</h3>
+                <p class="person__rolle">{p.rolle}</p>
+              </div>
+              <p>{p.text}</p>
+              <ul class="person__schwerpunkte" aria-label="Schwerpunkte">
+                {p.schwerpunkte.map((s) => (
+                  <li>{s}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="raeume-titel">
+    <div class="container">
+      <div class="kopf">
+        <span class="eyebrow">Räume</span>
+        <h2 id="raeume-titel" class="h2">Platz für Behandlung und Training</h2>
+      </div>
+      <ul class="raeume">
+        {
+          raeume.map((r) => (
+            <li class="raum reveal">
+              <div class="img-frame raum__bild">
+                <Picture src={r.bild} alt={r.alt} widths={[360, 520, 720]} sizes="(min-width: 60rem) 30vw, 92vw" formats={['avif', 'webp']} />
+              </div>
+              <h3 class="raum__titel">{r.titel}</h3>
+              <p>{r.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="container anfahrt-wrap" aria-labelledby="anfahrt-titel">
+    <div class="anfahrt hell">
+      <div class="anfahrt__text">
+        <span class="eyebrow">Anfahrt</span>
+        <h2 id="anfahrt-titel" class="h3">So finden Sie uns</h2>
+        <address>
+          {praxis.name}<br />
+          {praxis.strasse}, {praxis.plz} {praxis.ort}<br />
+          {praxis.lage}
+        </address>
+        <p>Bus 4 und 7 bis Haltestelle Lindenplatz. Die Einfahrt zum Hof liegt direkt neben der Apotheke.</p>
+      </div>
+      <ul class="haken">
+        {ausstattung.map((a) => <li>{a}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <TerminCta titel="Lernen Sie uns kennen." />
+</BaseLayout>
+
+<style>
+  .team {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  .person {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem 1.25rem;
+    align-items: center;
+  }
+  .person > p,
+  .person__schwerpunkte {
+    grid-column: 1 / -1;
+  }
+  .person > p {
+    color: var(--ink-2);
+  }
+  .person__initialen {
+    display: grid;
+    place-items: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 50%;
+    background: var(--salbei-hell);
+    color: var(--salbei-2);
+    font-family: var(--font-display-stack);
+    font-size: 1.3rem;
+  }
+  .person__name {
+    font-size: var(--step-1);
+  }
+  .person__rolle {
+    color: var(--ink-3);
+    font-size: 0.95rem;
+  }
+  .person__schwerpunkte {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .person__schwerpunkte li {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: var(--weiss);
+    border: 1px solid var(--line);
+    font-size: 0.85rem;
+  }
+
+  .raeume {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .raum {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+  .raum__bild {
+    aspect-ratio: 4 / 3;
+    margin-bottom: 0.5rem;
+  }
+  .raum__titel {
+    font-size: var(--step-1);
+  }
+  .raum p {
+    color: var(--ink-2);
+  }
+
+  .anfahrt-wrap {
+    padding-bottom: var(--section);
+  }
+  .anfahrt {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem 4rem;
+    align-items: center;
+    padding: clamp(1.75rem, 1rem + 4vw, 4rem);
+    border-radius: var(--radius-gross);
+  }
+  .anfahrt__text {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+  address {
+    font-style: normal;
+    font-weight: 600;
+  }
+  .anfahrt__text p {
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 60rem) {
+    .team,
+    .raeume,
+    .anfahrt {
+      grid-template-columns: 1fr;
+    }
+    .raeume {
+      max-width: 36rem;
+    }
+  }
+</style>

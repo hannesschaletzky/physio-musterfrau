@@ -1,0 +1,151 @@
+---
+import Logo from './Logo.astro';
+import { praxis, navigation, ersteller } from '../data/praxis';
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__marke">
+        <Logo />
+        <p>
+          Physiotherapie in {praxis.ort} seit {praxis.gruendung}. Mit Zeit für Ihre Fragen und Übungen, die in Ihren Alltag passen.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="footer__title">Adresse</h2>
+        <address>
+          {praxis.strasse}<br />
+          {`${praxis.plz} ${praxis.ort}`}<br />
+          {praxis.lage}
+        </address>
+      </div>
+
+      <div>
+        <h2 class="footer__title">Kontakt</h2>
+        <address>
+          <a href={praxis.telefonHref}>{praxis.telefon}</a><br />
+          <a href={`mailto:${praxis.email}`}>{praxis.email}</a>
+        </address>
+      </div>
+
+      <div>
+        <h2 class="footer__title">Öffnungszeiten</h2>
+        <dl class="zeiten">
+          {
+            praxis.oeffnungszeiten.map((o) => (
+              <div>
+                <dt>{o.tage}</dt>
+                <dd>{o.zeit}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© {new Date().getFullYear()} {praxis.name} · Eine fiktive Praxis</p>
+      <ul>
+        {
+          navigation.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+        <li><a href="/impressum/">Impressum</a></li>
+        <li><a href="/datenschutz/">Datenschutz</a></li>
+        <li>Website von <a href={ersteller.url}>{ersteller.name}</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--weiss);
+    padding-top: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+    padding-bottom: 2rem;
+  }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.3fr;
+    gap: 2.5rem;
+    padding-bottom: 3rem;
+  }
+  .footer__marke {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+  }
+  .footer__marke p {
+    color: var(--ink-2);
+    max-width: 30ch;
+    font-size: 0.95rem;
+  }
+  .footer__title {
+    font-family: var(--font-body-stack);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 1rem;
+  }
+  address {
+    font-style: normal;
+  }
+  address a {
+    text-decoration: none;
+  }
+  address a:hover {
+    text-decoration: underline;
+  }
+  .zeiten {
+    font-size: 0.95rem;
+  }
+  /* In der schmalen Spalte stehen Tag und Uhrzeit untereinander */
+  .zeiten :global(div) {
+    flex-direction: column;
+    gap: 0;
+  }
+  .zeiten :global(dd) {
+    text-align: left;
+  }
+  address a {
+    overflow-wrap: anywhere;
+  }
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.85rem;
+    color: var(--ink-3);
+  }
+  .footer__bottom ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer__bottom a {
+    color: var(--ink-2);
+  }
+  @media (max-width: 64rem) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 34rem) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

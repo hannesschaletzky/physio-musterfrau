@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Arrow from '../components/Arrow.astro';
+---
+
+<BaseLayout title="Seite nicht gefunden" description="Diese Seite gibt es leider nicht.">
+  <PageIntro
+    eyebrow="Fehler 404"
+    title="Hier geht es <em>nicht weiter.</em>"
+    lead="Die Seite, die Sie suchen, gibt es nicht oder nicht mehr. Vielleicht hilft einer dieser Wege:"
+  >
+    <div class="aktionen">
+      <a href="/" class="btn btn--voll">Zur Startseite <Arrow /></a>
+      <a href="/leistungen/" class="btn btn--rand">Leistungen</a>
+      <a href="/kontakt/" class="btn btn--rand">Kontakt</a>
+    </div>
+  </PageIntro>
+  <div class="abstand"></div>
+</BaseLayout>
+
+<style>
+  .aktionen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .abstand {
+    height: var(--section);
+  }
+</style>

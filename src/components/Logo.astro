@@ -1,0 +1,44 @@
+---
+// Bildmarke: ein Kreis als Kopf über einer geschwungenen Wirbelsäule
+---
+
+<span class="logo">
+  <svg class="logo__marke" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+    <rect width="40" height="40" rx="12" fill="var(--salbei)"></rect>
+    <circle cx="20" cy="11.5" r="3.6" fill="var(--apricot)"></circle>
+    <path d="M20 18c-4 3.2 4 6.4 0 9.6s4 3.6 0 5.4" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"></path>
+  </svg>
+  <span class="logo__text">
+    <span class="logo__name">Physiotherapie</span>
+    <span class="logo__zusatz">Erika Musterfrau</span>
+  </span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    line-height: 1;
+  }
+  .logo__marke {
+    width: 2.6rem;
+    height: 2.6rem;
+    flex: none;
+  }
+  .logo__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .logo__name {
+    font-family: var(--font-display-stack);
+    font-weight: 500;
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+  }
+  .logo__zusatz {
+    font-size: 0.8rem;
+    color: var(--ink-3);
+  }
+</style>

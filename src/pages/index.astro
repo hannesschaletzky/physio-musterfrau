@@ -1,0 +1,309 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Arrow from '../components/Arrow.astro';
+import TerminCta from '../components/TerminCta.astro';
+import { praxis } from '../data/praxis';
+import { leistungen } from '../data/leistungen';
+import heroBild from '../assets/images/hero-ruecken.jpg';
+import raumBild from '../assets/images/behandlungsraum.jpg';
+
+const schritte = [
+  {
+    titel: 'Anrufen oder anfragen',
+    text: 'Mit Rezept oder ohne: Sie bekommen innerhalb eines Werktags einen Terminvorschlag.',
+  },
+  {
+    titel: 'Erstes Kennenlernen',
+    text: 'Wir nehmen uns Zeit für Ihre Geschichte, untersuchen genau und erklären, was wir vorhaben.',
+  },
+  {
+    titel: 'Behandeln und üben',
+    text: 'Jede Behandlung baut auf der letzten auf. Dazu kommen ein paar Übungen für zu Hause, nicht zwanzig.',
+  },
+];
+
+const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und privat', 'Barrierefrei mit Aufzug', 'Parkplätze im Hof'];
+---
+
+<BaseLayout
+  title={praxis.name}
+  description="Physiotherapie in Musterstadt: Krankengymnastik, Manuelle Therapie, Gerätetraining, Lymphdrainage und Massage. Alle Kassen und privat, Termine meist noch in derselben Woche."
+>
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__text">
+        <span class="eyebrow">Physiotherapie in {praxis.ort}</span>
+        <h1 class="display">Wieder gut <em>in Bewegung.</em></h1>
+        <p class="lead">
+          Bei Rückenschmerzen, nach einer Operation oder wenn die Schulter nicht mehr will: Wir finden heraus, woher die Beschwerden kommen,
+          und arbeiten mit Ihnen daran, dass sie wieder verschwinden.
+        </p>
+        <div class="hero__aktionen">
+          <a href="/kontakt/" class="btn btn--voll">Termin anfragen <Arrow /></a>
+          <a href="/leistungen/" class="btn btn--rand">Unsere Leistungen</a>
+        </div>
+        <ul class="hero__fakten" aria-label="Auf einen Blick">
+          {versprechen.map((v) => <li>{v}</li>)}
+        </ul>
+      </div>
+      <div class="hero__bild img-frame">
+        <Picture
+          src={heroBild}
+          alt="Zwei Hände liegen ruhig auf dem oberen Rücken einer Patientin im Strickpullover"
+          widths={[420, 640, 860, 1080]}
+          sizes="(min-width: 60rem) 38vw, 92vw"
+          formats={['avif', 'webp']}
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section weiss" aria-labelledby="leistungen-titel">
+    <div class="container">
+      <div class="kopf">
+        <span class="eyebrow">Leistungen</span>
+        <h2 id="leistungen-titel" class="h2">Was wir für Sie tun können</h2>
+      </div>
+      <ul class="leistungen">
+        {
+          leistungen.map((l) => (
+            <li class="leistung reveal">
+              <h3 class="leistung__titel">{l.titel}</h3>
+              <p>{l.kurz}</p>
+              <a href={`/leistungen/#${l.id}`} class="link-pfeil">
+                Mehr erfahren <span class="visually-hidden">über {l.titel}</span>
+                <Arrow />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="ablauf-titel">
+    <div class="container ablauf">
+      <div class="ablauf__bild img-frame">
+        <Picture
+          src={raumBild}
+          alt="Heller Behandlungsraum mit Therapieliege vor einem großen Fenster"
+          widths={[480, 720, 960]}
+          sizes="(min-width: 60rem) 45vw, 92vw"
+          formats={['avif', 'webp']}
+        />
+      </div>
+      <div class="ablauf__text">
+        <span class="eyebrow">So läuft es ab</span>
+        <h2 id="ablauf-titel" class="h2">In drei Schritten <em>zur Behandlung</em></h2>
+        <ol class="schritte">
+          {
+            schritte.map((s, i) => (
+              <li>
+                <span class="schritte__nr zahlen" aria-hidden="true">
+                  {i + 1}
+                </span>
+                <div>
+                  <h3>{s.titel}</h3>
+                  <p>{s.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+        <a href="/ihr-termin/" class="link-pfeil">Alles zu Rezept, Kosten und Ablauf <Arrow /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--zitat container" aria-label="Über die Praxis">
+    <figure class="zitat hell">
+      <blockquote>
+        <p>
+          „Ich möchte, dass Sie nach jeder Stunde wissen, was wir gemacht haben und warum. Wer versteht, was im Körper passiert, bleibt
+          dran und wird schneller wieder fit.“
+        </p>
+      </blockquote>
+      <figcaption>
+        <strong>{praxis.inhaberin}</strong>
+        <span>Physiotherapeutin und Inhaberin</span>
+      </figcaption>
+      <a href="/praxis/" class="link-pfeil">Praxis und Team kennenlernen <Arrow /></a>
+    </figure>
+  </section>
+
+  <TerminCta />
+</BaseLayout>
+
+<style>
+  .hero__inner {
+    display: grid;
+    grid-template-columns: 1.2fr 0.85fr;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: center;
+    padding-top: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+    padding-bottom: var(--section);
+  }
+  .hero__text {
+    display: grid;
+    gap: 1.6rem;
+    justify-items: start;
+  }
+  .hero__aktionen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .hero__fakten {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .hero__fakten li {
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: var(--salbei-hell);
+    color: var(--salbei-3);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .hero__bild {
+    aspect-ratio: 4 / 5;
+    border-radius: 12rem 12rem var(--radius-gross) var(--radius-gross);
+  }
+
+  .leistungen {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .leistung {
+    display: grid;
+    gap: 0.8rem;
+    align-content: start;
+    padding: 1.75rem;
+    border-radius: var(--radius);
+    background: var(--sand);
+    transition: background-color 0.25s var(--ease);
+  }
+  .leistung:hover {
+    background: var(--salbei-hell);
+  }
+  .leistung__titel {
+    font-size: var(--step-1);
+  }
+  .leistung p {
+    color: var(--ink-2);
+  }
+  .leistung .link-pfeil {
+    margin-top: 0.4rem;
+  }
+
+  .ablauf {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 1rem + 5vw, 6rem);
+    align-items: center;
+  }
+  .ablauf__bild {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-gross);
+  }
+  .ablauf__text {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+  }
+  .schritte {
+    list-style: none;
+    margin: 0.5rem 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .schritte li {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    gap: 1.1rem;
+  }
+  .schritte__nr {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--salbei);
+    color: #fff;
+    font-family: var(--font-display-stack);
+    font-size: 1.15rem;
+  }
+  .schritte h3 {
+    font-size: var(--step-1);
+    margin-bottom: 0.3rem;
+  }
+  .schritte p {
+    color: var(--ink-2);
+  }
+
+  .section--zitat {
+    padding-bottom: var(--section);
+  }
+  .zitat {
+    margin: 0;
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+    padding: clamp(2rem, 1rem + 4vw, 4.5rem);
+    border-radius: var(--radius-gross);
+  }
+  .zitat blockquote {
+    margin: 0;
+  }
+  .zitat blockquote p {
+    font-family: var(--font-display-stack);
+    font-size: var(--step-2);
+    font-weight: 300;
+    line-height: 1.35;
+    max-width: 34em;
+  }
+  .zitat figcaption {
+    display: grid;
+    gap: 0.1rem;
+  }
+  .zitat figcaption span {
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 64rem) {
+    .leistungen {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 60rem) {
+    .hero__inner,
+    .ablauf {
+      grid-template-columns: 1fr;
+    }
+    .hero__bild {
+      aspect-ratio: 4 / 3;
+      border-radius: var(--radius-gross);
+      max-width: 36rem;
+    }
+    .ablauf__bild {
+      aspect-ratio: 4 / 3;
+    }
+  }
+  @media (max-width: 40rem) {
+    .leistungen {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

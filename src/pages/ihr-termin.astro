@@ -1,0 +1,262 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import TerminCta from '../components/TerminCta.astro';
+
+const ablauf = [
+  {
+    titel: 'Vor dem Termin',
+    punkte: [
+      'Rezept vom Arzt oder der Ärztin besorgen, falls die Kasse zahlen soll',
+      'Das Rezept muss innerhalb von 28 Tagen nach Ausstellung bei uns beginnen',
+      'Arztbriefe, OP-Berichte oder Röntgenbefunde mitbringen, wenn vorhanden',
+    ],
+  },
+  {
+    titel: 'Beim ersten Termin',
+    punkte: [
+      'Bitte zehn Minuten früher da sein, für das Anmeldeblatt',
+      'Bequeme Kleidung, ein großes Handtuch und Ihre Versichertenkarte mitbringen',
+      'Wir fragen nach, untersuchen und erklären, was wir vorhaben',
+    ],
+  },
+  {
+    titel: 'Während der Behandlungsserie',
+    punkte: [
+      'Meist ein bis zwei Termine pro Woche, möglichst zu festen Zeiten',
+      'Übungen für zu Hause bekommen Sie als Blatt oder per E-Mail',
+      'Am Ende schicken wir auf Wunsch einen kurzen Bericht an Ihre Ärztin oder Ihren Arzt',
+    ],
+  },
+];
+
+const kosten = [
+  {
+    titel: 'Gesetzlich versichert',
+    text: 'Mit Rezept rechnen wir direkt mit Ihrer Krankenkasse ab. Erwachsene zahlen die gesetzliche Zuzahlung: 10 € pro Rezept plus 10 % der Behandlungskosten. Kinder und Jugendliche sind befreit.',
+  },
+  {
+    titel: 'Privat versichert und Beihilfe',
+    text: 'Sie bekommen eine Rechnung nach der Gebührenübersicht für Therapeuten. Wie viel Ihre Versicherung erstattet, hängt von Ihrem Tarif. Fragen Sie im Zweifel vorher nach.',
+  },
+  {
+    titel: 'Ohne Rezept',
+    text: 'Als Selbstzahler können Sie jederzeit kommen, auch zur Vorbeugung. Die Preise stehen auf der Seite Leistungen.',
+  },
+];
+
+const fragen = [
+  {
+    frage: 'Wie schnell bekomme ich einen Termin?',
+    antwort: 'In der Regel innerhalb einer Woche. Nach einer Operation oder bei akuten Schmerzen versuchen wir es schneller möglich zu machen.',
+  },
+  {
+    frage: 'Was passiert, wenn ich einen Termin nicht wahrnehmen kann?',
+    antwort:
+      'Bitte sagen Sie bis 24 Stunden vorher ab, gern auch auf dem Anrufbeantworter oder per E-Mail. Kurzfristig abgesagte Termine müssen wir leider privat in Rechnung stellen, weil die Kasse sie nicht übernimmt.',
+  },
+  {
+    frage: 'Kann ich mir aussuchen, wer mich behandelt?',
+    antwort: 'Ja, sagen Sie es bei der Anfrage dazu. Wir planen dann die Termine so, dass Sie die ganze Serie bei derselben Person haben.',
+  },
+  {
+    frage: 'Bieten Sie auch Termine am Abend an?',
+    antwort: 'Ja, montags bis donnerstags bis 19 Uhr. Abendtermine sind beliebt, fragen Sie deshalb am besten früh an.',
+  },
+  {
+    frage: 'Brauche ich für den Rückenkurs ein Rezept?',
+    antwort: 'Nein. Sie zahlen den Kurs selbst und reichen die Teilnahmebescheinigung bei Ihrer Krankenkasse ein. Die meisten erstatten 75 bis 100 %.',
+  },
+];
+---
+
+<BaseLayout
+  title="Ihr Termin"
+  description="Was Sie zum ersten Termin mitbringen, wie die Abrechnung mit Kasse oder privat funktioniert und Antworten auf häufige Fragen."
+>
+  <PageIntro
+    eyebrow="Ihr Termin"
+    title="Gut vorbereitet <em>zum ersten Termin.</em>"
+    lead="Rezept, Zuzahlung, Kleidung, Absagen: Hier steht alles, was Sie vor der ersten Behandlung wissen sollten. Wenn trotzdem eine Frage offen bleibt, rufen Sie einfach an."
+  />
+
+  <section class="section weiss" aria-labelledby="ablauf-titel">
+    <div class="container">
+      <div class="kopf">
+        <span class="eyebrow">Ablauf</span>
+        <h2 id="ablauf-titel" class="h2">Vom Rezept bis zur letzten Stunde</h2>
+      </div>
+      <ol class="phasen">
+        {
+          ablauf.map((phase, i) => (
+            <li class="phase karte reveal">
+              <span class="phase__nr zahlen">Schritt {i + 1}</span>
+              <h3 class="phase__titel">{phase.titel}</h3>
+              <ul class="haken">
+                {phase.punkte.map((p) => (
+                  <li>{p}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="kosten-titel">
+    <div class="container kosten">
+      <div class="kopf">
+        <span class="eyebrow">Kosten</span>
+        <h2 id="kosten-titel" class="h2">Wer zahlt was?</h2>
+        <p class="lead">Wir behandeln Versicherte aller gesetzlichen Kassen, Privatversicherte und Selbstzahler.</p>
+      </div>
+      <div class="kosten__liste">
+        {
+          kosten.map((k) => (
+            <div class="kosten__eintrag">
+              <h3>{k.titel}</h3>
+              <p>{k.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section weiss" aria-labelledby="faq-titel">
+    <div class="container faq">
+      <div class="kopf">
+        <span class="eyebrow">Häufige Fragen</span>
+        <h2 id="faq-titel" class="h2">Gut zu wissen</h2>
+      </div>
+      <div class="faq__liste">
+        {
+          fragen.map((f) => (
+            <details>
+              <summary>{f.frage}</summary>
+              <p>{f.antwort}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <div class="abstand"></div>
+  <TerminCta />
+</BaseLayout>
+
+<style>
+  .phasen {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .phase {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
+  .phase__nr {
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--salbei);
+  }
+  .phase__titel {
+    font-size: var(--step-1);
+  }
+  .phase .haken {
+    color: var(--ink-2);
+  }
+
+  .kosten {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 2rem clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .kosten__liste {
+    display: grid;
+  }
+  .kosten__eintrag {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .kosten__eintrag:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .kosten__eintrag h3 {
+    font-size: var(--step-1);
+  }
+  .kosten__eintrag p {
+    color: var(--ink-2);
+  }
+
+  .faq {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 2rem clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  details {
+    border-bottom: 1px solid var(--line);
+  }
+  details:first-child {
+    border-top: 1px solid var(--line);
+  }
+  summary {
+    position: relative;
+    padding: 1.15rem 2.5rem 1.15rem 0;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::after {
+    content: '+';
+    position: absolute;
+    right: 0;
+    top: 0.85rem;
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--salbei-hell);
+    color: var(--salbei-2);
+    font-size: 1.2rem;
+    line-height: 1;
+    transition: transform 0.2s var(--ease);
+  }
+  details[open] summary::after {
+    transform: rotate(45deg);
+  }
+  details p {
+    padding-bottom: 1.25rem;
+    color: var(--ink-2);
+    max-width: 40em;
+  }
+
+  .abstand {
+    height: var(--section);
+  }
+
+  @media (max-width: 60rem) {
+    .phasen,
+    .kosten,
+    .faq {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

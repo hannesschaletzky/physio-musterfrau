@@ -1,0 +1,71 @@
+---
+import Arrow from './Arrow.astro';
+import { praxis } from '../data/praxis';
+
+interface Props {
+  titel?: string;
+}
+const { titel = 'Bereit für den ersten Termin?' } = Astro.props;
+---
+
+<section class="container cta-wrap">
+  <div class="cta dunkel">
+    <div class="cta__text">
+      <h2 class="h2">{titel}</h2>
+      <p>
+        Rufen Sie uns an oder schreiben Sie uns. Wir melden uns innerhalb eines Werktags mit einem Terminvorschlag, meist schon für die
+        laufende Woche.
+      </p>
+    </div>
+    <div class="cta__aktionen">
+      <a href="/kontakt/" class="btn btn--voll">Termin anfragen <Arrow /></a>
+      <a href={praxis.telefonHref} class="btn btn--rand">{praxis.telefon}</a>
+      <p class="cta__zeiten">Telefonisch erreichbar {praxis.telefonzeiten}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-wrap {
+    padding-bottom: var(--section);
+  }
+  .cta {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 2rem 4rem;
+    align-items: center;
+    padding: clamp(2rem, 1rem + 4vw, 4.5rem);
+    border-radius: var(--radius-gross);
+  }
+  .cta__text {
+    display: grid;
+    gap: 1rem;
+  }
+  .cta__text p {
+    color: var(--on-salbei-2);
+    max-width: 34em;
+  }
+  .cta__aktionen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+  }
+  .cta__zeiten {
+    flex-basis: 100%;
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--on-salbei-2);
+  }
+  @media (max-width: 60rem) {
+    .cta {
+      grid-template-columns: 1fr;
+    }
+    .cta__aktionen {
+      justify-content: flex-start;
+    }
+    .cta__zeiten {
+      text-align: left;
+    }
+  }
+</style>
