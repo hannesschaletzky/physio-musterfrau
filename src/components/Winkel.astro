@@ -1,0 +1,62 @@
+---
+// Trainingsplan: Winkelmesser (Goniometer) mit dem Bewegungsumfang im Knie, Woche 1 gegen Woche 6.
+// Skala, Bogen und Schenkel werden zur Bauzeit berechnet.
+interface Props {
+  class?: string;
+  von?: number;
+  bis?: number;
+}
+const { class: klasse, von = 70, bis = 125 } = Astro.props;
+
+const cx = 210;
+const cy = 214;
+const r = 178;
+const runde = (n: number) => Math.round(n * 10) / 10;
+const punkt = (grad: number, radius: number) => {
+  const rad = (grad * Math.PI) / 180;
+  return [runde(cx + radius * Math.cos(rad)), runde(cy - radius * Math.sin(rad))];
+};
+
+const striche = Array.from({ length: 37 }, (_, i) => {
+  const grad = i * 5;
+  const lang = grad % 30 === 0;
+  const innen = r - (lang ? 18 : grad % 10 === 0 ? 11 : 6);
+  return { a: punkt(grad, r), b: punkt(grad, innen), lang };
+});
+// 0° und 180° stehen unter der Grundlinie, sonst lägen sie auf dem festen Schenkel
+const zahlen = [30, 60, 90, 120, 150].map((grad) => ({ grad, p: punkt(grad, r - 34) }));
+const [ax, ay] = punkt(von, r - 4);
+const [bx, by] = punkt(bis, r - 4);
+const bereich = `M${cx} ${cy} L${ax} ${ay} A${r - 4} ${r - 4} 0 0 0 ${bx} ${by} Z`;
+const schenkelVon = punkt(von, r + 14);
+const schenkelBis = punkt(bis, r + 14);
+// Marken an den Spitzen der Schenkel, außerhalb der Skala
+const textVon = punkt(von, r + 24);
+const textBis = punkt(bis, r + 24);
+---
+
+<svg class:list={['winkel', klasse]} viewBox="0 0 420 244" role="img" aria-labelledby="winkel-titel">
+  <title id="winkel-titel">Winkelmesser: Beugung im Knie verbessert sich von {von} Grad in Woche 1 auf {bis} Grad in Woche 6</title>
+  <path class="winkel__bereich" d={bereich}></path>
+  <path class="winkel__bogen" d={`M${cx + r} ${cy} A${r} ${r} 0 0 0 ${cx - r} ${cy}`} fill="none"></path>
+  <g class="winkel__skala">
+    {striche.map((s) => <line x1={s.a[0]} y1={s.a[1]} x2={s.b[0]} y2={s.b[1]} class:list={{ lang: s.lang }} />)}
+  </g>
+  <g class="winkel__zahlen">
+    {
+      zahlen.map((z) => (
+        <text x={z.p[0]} y={z.p[1] + 4} text-anchor="middle">
+          {z.grad}°
+        </text>
+      ))
+    }
+    <text x={cx + r} y={cy + 20} text-anchor="middle">0°</text>
+    <text x={cx - r} y={cy + 20} text-anchor="middle">180°</text>
+  </g>
+  <line class="winkel__schenkel" x1={cx} y1={cy} x2={cx + r + 14} y2={cy}></line>
+  <line class="winkel__schenkel winkel__schenkel--vorher" x1={cx} y1={cy} x2={schenkelVon[0]} y2={schenkelVon[1]}></line>
+  <line class="winkel__schenkel winkel__schenkel--jetzt" x1={cx} y1={cy} x2={schenkelBis[0]} y2={schenkelBis[1]}></line>
+  <circle class="winkel__achse" cx={cx} cy={cy} r="7"></circle>
+  <text class="winkel__marke" x={textVon[0] + 4} y={textVon[1] + 4} text-anchor="start">W1 · {von}°</text>
+  <text class="winkel__marke winkel__marke--jetzt" x={textBis[0] - 4} y={textBis[1] + 4} text-anchor="end">W6 · {bis}°</text>
+</svg>

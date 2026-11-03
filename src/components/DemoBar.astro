@@ -1,26 +1,82 @@
 ---
-import { ersteller } from '../data/praxis';
+import { ersteller, stile } from '../data/praxis';
 ---
 
 <aside class="demobar" aria-label="Hinweis zum Beispielprojekt">
-  <p class="container">
-    Beispielprojekt: Die Praxis ist erfunden. Website gestaltet und entwickelt von{' '}
-    <a href={ersteller.url}>{ersteller.name}</a>
-  </p>
+  <div class="container demobar__inner">
+    <p>
+      Beispielprojekt: Die Praxis ist erfunden. Website gestaltet und entwickelt von{' '}
+      <a href={ersteller.url}>{ersteller.name}</a>
+    </p>
+    <nav class="stilwahl" aria-label="Designvariante">
+      <span>Design:</span>
+      <ul>
+        {
+          stile.map((s) => (
+            <li>
+              <a href={`?stil=${s.id}`} data-stil-link={s.id}>
+                {s.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
 </aside>
 
 <style>
   .demobar {
-    background: var(--salbei-3);
-    color: var(--on-salbei-2);
+    --demobar-bg: var(--salbei-3);
+    --demobar-fg: var(--on-salbei);
+    background: var(--demobar-bg);
+    color: var(--demobar-fg);
     font-size: 0.8rem;
   }
+  .demobar__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.35rem 1.5rem;
+    padding-block: 0.45rem;
+  }
   p {
-    padding-block: 0.55rem;
-    text-align: center;
+    opacity: 0.85;
   }
   a {
-    color: var(--on-salbei);
     font-weight: 600;
+  }
+  .stilwahl {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  ul {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .stilwahl a {
+    display: block;
+    padding: 0.15rem 0.7rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    text-decoration: none;
+    opacity: 0.7;
+  }
+  .stilwahl a:hover {
+    opacity: 1;
+  }
+  /* Aktiver Stil: invertiert. Ohne JavaScript gilt Ruhepuls. */
+  :global(:root:not([data-stil])) [data-stil-link='ruhepuls'],
+  :global(:root[data-stil='ruhepuls']) [data-stil-link='ruhepuls'],
+  :global(:root[data-stil='lehrbuch']) [data-stil-link='lehrbuch'],
+  :global(:root[data-stil='trainingsplan']) [data-stil-link='trainingsplan'] {
+    opacity: 1;
+    background: var(--demobar-fg);
+    color: var(--demobar-bg);
   }
 </style>

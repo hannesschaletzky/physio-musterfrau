@@ -34,17 +34,26 @@ import { leistungen } from '../data/leistungen';
     {
       leistungen.map((l, i) => (
         <section id={l.id} class="eintrag" aria-labelledby={`${l.id}-titel`}>
-          <div class="eintrag__bild img-frame">
-            <Picture
-              src={l.bild}
-              alt={l.alt}
-              widths={[420, 640, 860]}
-              sizes="(min-width: 60rem) 34vw, 92vw"
-              formats={['avif', 'webp']}
-              loading={i === 0 ? 'eager' : 'lazy'}
-            />
-          </div>
+          <figure class="eintrag__bild">
+            <div class="img-frame">
+              <Picture
+                src={l.bild}
+                alt={l.alt}
+                widths={[420, 640, 860]}
+                sizes="(min-width: 60rem) 34vw, 92vw"
+                formats={['avif', 'webp']}
+                loading={i === 0 ? 'eager' : 'lazy'}
+              />
+            </div>
+            <figcaption class="abb nur-lehrbuch" aria-hidden="true">
+              <span>Abb. 1.{i + 1}</span> {l.alt}
+            </figcaption>
+          </figure>
           <div class="eintrag__text">
+            <span class="eintrag__nr" aria-hidden="true">
+              <span class="nur-lehrbuch">1.{i + 1}</span>
+              <span class="nur-trainingsplan">{String(i + 1).padStart(2, '0')}</span>
+            </span>
             <h2 id={`${l.id}-titel`} class="h3">
               {l.titel}
             </h2>
@@ -138,7 +147,14 @@ import { leistungen } from '../data/leistungen';
     order: 2;
   }
   .eintrag__bild {
+    margin: 0;
+  }
+  .eintrag__bild .img-frame {
     aspect-ratio: 4 / 3;
+    border-radius: 12rem 12rem var(--radius-gross) var(--radius-gross);
+  }
+  .eintrag__nr {
+    display: none;
   }
   .eintrag__text {
     display: grid;
@@ -210,6 +226,9 @@ import { leistungen } from '../data/leistungen';
     }
     .eintrag__bild {
       max-width: 36rem;
+    }
+    .eintrag__bild .img-frame {
+      border-radius: var(--radius-gross);
     }
   }
   @media (max-width: 34rem) {

@@ -28,6 +28,13 @@ export const navigation = [
   { href: '/kontakt/', label: 'Kontakt' },
 ];
 
+// Designvarianten auf denselben Inhalten. Der erste Stil gilt ohne Auswahl und ohne JavaScript.
+export const stile = [
+  { id: 'ruhepuls', label: 'Ruhepuls' },
+  { id: 'lehrbuch', label: 'Lehrbuch' },
+  { id: 'trainingsplan', label: 'Trainingsplan' },
+] as const;
+
 export const ersteller = {
   name: 'Hannes Schaletzky',
   url: 'https://hschaletzky.com',

@@ -6,6 +6,22 @@ einer Sprache plus Impressum und Datenschutz.
 
 **Live:** https://physio-musterfrau.hschaletzky.com
 
+## Drei Designs, ein Inhalt
+
+Die Seite gibt es in drei Stilen, umschaltbar in der Demo-Leiste oder per Link:
+
+| Stil          | Link                   | Idee                                                                     |
+| ------------- | ---------------------- | ------------------------------------------------------------------------ |
+| Ruhepuls      | `/?stil=ruhepuls`      | Ruhig und mittig: rundes Foto auf der Pulslinie, Atemübung 4 – 7 – 8 (Standard) |
+| Lehrbuch      | `/?stil=lehrbuch`      | Anatomie-Atlas: Serifenschrift, Wirbelsäulen-Tafel, Abbildungen, Kapitel  |
+| Trainingsplan | `/?stil=trainingsplan` | Sportphysio: Millimeterraster, Übungsplan, Winkelmesser, Datenblätter    |
+
+Alle Stile teilen Markup, Inhalte und Daten. Ruhepuls steckt in `global.css` und den Komponenten, die anderen
+beiden sind je eine Datei in `src/styles/stile/`, die über `<html data-stil="…">` greift. Elemente, die nur ein Stil
+zeigt, tragen die Klasse `nur-<stil>`. Ein kleines Inline-Skript im `<head>` setzt den Stil vor dem ersten Zeichnen
+und merkt ihn sich (`localStorage`). Ohne JavaScript gilt Ruhepuls. Die Liste der Stile steht in `src/data/praxis.ts`
+(`stile`), die Wirbelsäule und der Winkelmesser werden in `Anatomie.astro` und `Winkel.astro` zur Bauzeit berechnet.
+
 ## Stack
 
 - [Astro 7](https://astro.build), komplett statisch, nur ein paar Zeilen JavaScript (Terminanfrage)
@@ -32,7 +48,7 @@ npm run build        # statische Seite nach dist/
 | Leistungen und Preise                | `src/data/leistungen.ts`                             |
 | Team                                 | `src/pages/praxis.astro`                             |
 | Ablauf, Kosten, häufige Fragen       | `src/pages/ihr-termin.astro`                         |
-| Farben, Typografie                   | `src/styles/global.css` (`:root`)                    |
+| Farben, Typografie                   | `src/styles/global.css` (`:root`), `src/styles/stile/` |
 | Fotos                                | `src/assets/images/` (+ Bildnachweis in `praxis.ts`) |
 
 Die Öffnungszeiten stehen zusätzlich für Suchmaschinen in `src/layouts/BaseLayout.astro` (`oeffnung`).

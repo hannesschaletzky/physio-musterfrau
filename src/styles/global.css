@@ -399,6 +399,13 @@ table {
   text-align: right;
 }
 
+/* Elemente, die nur ein Stil zeigt. Ohne data-stil (kein JavaScript) gilt Ruhepuls. */
+:root:not([data-stil='lehrbuch']) .nur-lehrbuch,
+:root:not([data-stil='trainingsplan']) .nur-trainingsplan,
+:root[data-stil]:not([data-stil='ruhepuls']) .nur-ruhepuls {
+  display: none !important;
+}
+
 /* Fließtext für Impressum und Datenschutz */
 .prose {
   max-width: 42rem;

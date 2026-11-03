@@ -1,0 +1,930 @@
+/* Stil „Lehrbuch“: ein alter Anatomie-Atlas. Cremefarbenes Papier, eine Serifenschrift, Tinte, feine Linien,
+   Kapitelnummern, Abbildungen mit Unterschrift und ein gedecktes Rostrot nur für Nummern und Marken.
+   Das doppelte :root hebt die Spezifität über die komponenteneigenen Styles. */
+:root:root[data-stil='lehrbuch'] {
+  --papier: #f4efe4;
+  --papier-2: #ebe3d3;
+  --blatt: #faf7f0;
+  --tinte: #2b2622;
+  --rost: #974a32;
+  --rost-2: #7a3a26;
+
+  --sand: var(--papier);
+  --sand-2: var(--papier-2);
+  --weiss: var(--blatt);
+  --ink: var(--tinte);
+  --ink-2: #554c44;
+  --ink-3: #776d63;
+  --line: #d6cbb7;
+  --salbei: var(--tinte);
+  --salbei-2: var(--rost-2);
+  --salbei-3: var(--tinte);
+  --salbei-hell: var(--papier-2);
+  --salbei-mittel: #c4b49b;
+  --apricot: var(--rost);
+  --apricot-hell: var(--papier-2);
+  --on-salbei: var(--papier);
+  --on-salbei-2: #cfc4b1;
+
+  --font-display-stack: var(--font-lehrbuch), Georgia, serif;
+  --font-body-stack: var(--font-lehrbuch), Georgia, serif;
+
+  --step--1: clamp(0.9rem, 0.88rem + 0.1vw, 0.95rem);
+  --step-0: clamp(1.06rem, 1rem + 0.25vw, 1.2rem);
+  --step-4: clamp(2.4rem, 1.6rem + 3.6vw, 4.6rem);
+  --radius: 0px;
+  --radius-gross: 0px;
+
+  & body {
+    line-height: 1.6;
+    counter-reset: abschnitt;
+  }
+  & h1,
+  & h2,
+  & h3,
+  & h4 {
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    line-height: 1.15;
+  }
+  & .display {
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.08;
+  }
+  & .display em,
+  & .h2 em,
+  & .dunkel .display em,
+  & .dunkel .h2 em {
+    font-style: italic;
+    color: inherit;
+  }
+  & ::selection {
+    background: #e6cdbd;
+    color: var(--tinte);
+  }
+  & :focus-visible {
+    outline: 2px solid var(--rost);
+    outline-offset: 3px;
+  }
+
+  /* Marken in Versalien, gesperrt. Ohne Punkt davor. */
+  & .eyebrow,
+  & .klein,
+  & .footer__title {
+    font-family: var(--font-body-stack);
+    font-size: 0.78rem;
+    font-weight: 500;
+    font-style: normal;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  & .eyebrow::before {
+    display: none;
+  }
+
+  /* Abschnittsnummern vor den Zwischenüberschriften */
+  & .kopf .h2,
+  & .ablauf__text .h2 {
+    counter-increment: abschnitt;
+  }
+  & .kopf .h2::before,
+  & .ablauf__text .h2::before {
+    content: counter(abschnitt) '\2003';
+    color: var(--rost);
+    font-style: normal;
+  }
+  & .kopf {
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--tinte);
+  }
+  & .kopf .eyebrow {
+    display: none;
+  }
+
+  & .lead {
+    font-style: italic;
+    color: var(--ink-2);
+  }
+
+  /* Abbildungen wie Bildtafeln: Rahmen, Papierrand, Unterschrift */
+  & .img-frame {
+    border-radius: 0;
+    outline: 1px solid var(--tinte);
+    outline-offset: 0.45rem;
+    background: var(--papier-2);
+  }
+  & .abb {
+    margin-top: 1.1rem;
+    font-size: 0.92rem;
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+  & .abb span {
+    margin-right: 0.35rem;
+    font-style: normal;
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--rost);
+  }
+
+  /* Knöpfe wie Stempelfelder, Links unterstrichen und kursiv */
+  & .btn {
+    padding: 0.75rem 1.35rem;
+    border: 1px solid var(--tinte);
+    border-radius: 0;
+    font-family: var(--font-body-stack);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  & .btn--voll,
+  & .dunkel .btn--voll {
+    background: var(--tinte);
+    border-color: var(--tinte);
+    color: var(--papier);
+  }
+  & .btn--voll:hover,
+  & .dunkel .btn--voll:hover {
+    background: var(--rost-2);
+    border-color: var(--rost-2);
+  }
+  & .btn--rand,
+  & .dunkel .btn--rand {
+    background: transparent;
+    border-color: var(--tinte);
+    color: var(--tinte);
+  }
+  & .btn--rand:hover,
+  & .dunkel .btn--rand:hover {
+    background: var(--papier-2);
+    border-color: var(--tinte);
+  }
+  & .link-pfeil {
+    font-weight: 400;
+    font-style: italic;
+    color: var(--tinte);
+    text-decoration: underline;
+    text-decoration-color: var(--salbei-mittel);
+  }
+  & .link-pfeil:hover {
+    color: var(--rost-2);
+    text-decoration-color: currentColor;
+  }
+
+  & .karte {
+    background: var(--blatt);
+    border: 1px solid var(--line);
+  }
+  & .weiss .karte {
+    background: var(--papier);
+  }
+  & .hell {
+    background: var(--papier-2);
+  }
+
+  /* Aufzählungen mit Gedankenstrich statt Haken */
+  & .haken li {
+    grid-template-columns: 1.1rem minmax(0, 1fr);
+    gap: 0.4rem;
+  }
+  & .haken li::before {
+    content: '–';
+    width: auto;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    background: none;
+    color: var(--rost);
+  }
+  & .zeiten div {
+    border-bottom: 1px dotted var(--salbei-mittel);
+  }
+  & .zeiten dd {
+    font-weight: 400;
+  }
+  & .prose li::marker {
+    color: var(--rost);
+  }
+  & .prose h2 {
+    font-style: italic;
+  }
+
+  /* Demoleiste und Kopf: laufender Kolumnentitel mit nummeriertem Inhaltsverzeichnis */
+  & .demobar {
+    --demobar-bg: var(--tinte);
+    --demobar-fg: var(--papier);
+  }
+  & .header {
+    background: color-mix(in srgb, var(--papier) 94%, transparent);
+    border-bottom: 3px double var(--tinte);
+  }
+  & .logo__marke rect {
+    fill: none;
+    stroke: var(--tinte);
+    stroke-width: 1.5;
+  }
+  & .logo__marke circle {
+    fill: var(--rost);
+  }
+  & .logo__marke path {
+    stroke: var(--tinte);
+    stroke-width: 2;
+  }
+  & .logo__name {
+    font-weight: 500;
+    font-size: 1.25rem;
+  }
+  & .logo__zusatz {
+    font-style: italic;
+    font-size: 0.85rem;
+  }
+  & .header__nav ul {
+    counter-reset: inhalt;
+    gap: 0.2rem;
+  }
+  & .header__nav a {
+    padding: 0.4rem 0.7rem;
+    border-radius: 0;
+    font-weight: 400;
+  }
+  & .header__nav a::before {
+    counter-increment: inhalt;
+    content: counter(inhalt) '\2002';
+    color: var(--rost);
+    font-size: 0.85em;
+  }
+  & .header__nav a:hover,
+  & .header__nav a[aria-current='page'] {
+    background: none;
+    color: var(--tinte);
+    font-weight: 400;
+    text-decoration: underline;
+    text-decoration-color: var(--rost);
+  }
+  & .header__telefon {
+    font-weight: 400;
+    font-style: italic;
+  }
+  & .header__telefon svg {
+    color: var(--tinte);
+  }
+  & .header__toggle,
+  & .menu__close {
+    border-radius: 0;
+    background: none;
+    border: 1px solid var(--tinte);
+    color: var(--tinte);
+  }
+  & .menu {
+    background: var(--papier);
+  }
+  & .menu__head {
+    border-bottom: 3px double var(--tinte);
+  }
+  & .menu ul {
+    counter-reset: inhalt -1;
+  }
+  & .menu li a {
+    font-style: italic;
+    border-bottom: 1px dotted var(--salbei-mittel);
+  }
+  & .menu li a::before {
+    counter-increment: inhalt;
+    content: counter(inhalt) '\2003';
+    font-style: normal;
+    font-size: 0.6em;
+    vertical-align: 0.4em;
+    color: var(--rost);
+  }
+  & .menu li a[aria-current='page'] {
+    color: var(--rost-2);
+  }
+
+  /* Startseite: Titelblatt mit Bildtafel daneben */
+  & .hero {
+    border-bottom: 1px solid var(--tinte);
+  }
+  & .hero__inner {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    justify-items: stretch;
+    align-items: center;
+    gap: clamp(2.5rem, 1rem + 5vw, 6rem);
+    text-align: left;
+    padding-top: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+    padding-bottom: clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+  & .hero__text {
+    justify-items: start;
+    gap: 1.5rem;
+    max-width: none;
+  }
+  & .hero__text .lead {
+    margin-inline: 0;
+  }
+  & .hero__aktionen {
+    justify-content: flex-start;
+  }
+  & .hero__buehne {
+    order: 0;
+    padding-block: 0;
+    margin-block: 0;
+  }
+  & .hero__bild {
+    display: none;
+  }
+  /* Eckdaten als Fußnoten */
+  & .hero__fakten {
+    counter-reset: fussnote;
+    display: grid;
+    justify-content: start;
+    gap: 0.2rem;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    font-size: 0.92rem;
+    font-style: italic;
+    position: relative;
+  }
+  & .hero__fakten::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5rem;
+    border-top: 1px solid var(--tinte);
+  }
+  & .hero__fakten li {
+    gap: 0.4rem;
+    align-items: baseline;
+  }
+  & .hero__fakten li::before {
+    counter-increment: fussnote;
+    content: counter(fussnote);
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    font-style: normal;
+    font-size: 0.72em;
+    vertical-align: super;
+    color: var(--rost);
+  }
+
+  & .tafel {
+    margin: 0;
+    padding: clamp(1rem, 0.5rem + 2vw, 2rem);
+    background: var(--blatt);
+    border: 1px solid var(--tinte);
+    box-shadow: 0.5rem 0.5rem 0 var(--papier-2);
+  }
+  & .anatomie {
+    width: 100%;
+    max-width: 26rem;
+    margin-inline: auto;
+  }
+  & .anatomie__wirbel {
+    fill: var(--blatt);
+    stroke: var(--tinte);
+    stroke-width: 1.1;
+    stroke-linejoin: round;
+  }
+  & .anatomie__linie {
+    fill: none;
+    stroke: var(--tinte);
+    stroke-width: 0.7;
+  }
+  & .anatomie__punkt {
+    fill: var(--tinte);
+  }
+  & .anatomie text {
+    font-family: var(--font-lehrbuch), Georgia, serif;
+    fill: var(--tinte);
+  }
+  & .anatomie__nr {
+    font-size: 15px;
+    fill: var(--rost) !important;
+  }
+  & .anatomie__name {
+    font-size: 16px;
+  }
+  & .anatomie__zusatz,
+  & .anatomie__richtung {
+    font-size: 13px;
+    font-style: italic;
+    fill: var(--ink-2) !important;
+  }
+  & .tafel .abb {
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line);
+  }
+
+  /* Leistungen als Register mit Punktlinie und Dauer */
+  & .sektion-leistungen {
+    background: var(--papier);
+  }
+  & .leistungen {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(2rem, 1rem + 4vw, 5rem);
+    border-top: 0;
+    counter-reset: none;
+  }
+  & .leistung {
+    grid-template-columns: 2.2rem minmax(0, 1fr) auto;
+    gap: 0.3rem 0.6rem;
+    padding: 1.3rem 0;
+    border-bottom: 1px dotted var(--salbei-mittel);
+  }
+  & .leistung:hover {
+    background: none;
+  }
+  & .leistung__nr {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--rost);
+  }
+  & .leistung__titel {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: var(--step-1);
+    font-weight: 400;
+  }
+  & .leistung__titel::after {
+    content: '';
+    flex: 1;
+    min-width: 1.5rem;
+    border-bottom: 1px dotted var(--tinte);
+  }
+  & .leistung__daten {
+    display: block;
+    grid-column: 3;
+    grid-row: 1;
+    margin: 0;
+    font-style: italic;
+    white-space: nowrap;
+  }
+  & .leistung__daten div:not(:first-child),
+  & .leistung__daten dt {
+    display: none;
+  }
+  & .leistung__daten dd {
+    margin: 0;
+  }
+  & .leistung__kurz,
+  & .leistung .link-pfeil {
+    grid-column: 2 / -1;
+  }
+  & .leistung__kurz {
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+  & .leistung .link-pfeil {
+    justify-self: start;
+    font-size: 0.95rem;
+  }
+  & .leistung .link-pfeil svg {
+    display: none;
+  }
+
+  /* Ablauf: Bildtafel, römisch nummerierte Schritte und ein Merke-Kasten */
+  & .ablauf {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  & .ablauf__bild .img-frame {
+    aspect-ratio: 4 / 5;
+    border-radius: 0;
+  }
+  & .schritte {
+    counter-reset: schritt;
+    gap: 1.4rem;
+  }
+  & .schritte::before {
+    display: none;
+  }
+  & .schritte li {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+  & .schritte__nr {
+    display: block;
+    width: auto;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    font-size: 0;
+    text-align: right;
+  }
+  & .schritte__nr::before {
+    counter-increment: schritt;
+    content: counter(schritt, upper-roman) '.';
+    font-size: var(--step-1);
+    color: var(--rost);
+  }
+  & .schritte h3 {
+    font-style: italic;
+  }
+  & .merke {
+    display: grid;
+    gap: 0.35rem;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: var(--papier-2);
+    border-top: 1px solid var(--tinte);
+    border-bottom: 1px solid var(--tinte);
+  }
+  & .merke strong {
+    font-size: 0.76rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--rost);
+  }
+
+  /* Zitat als Motto: rechtsbündiger Block, kursiv */
+  & .zitat {
+    max-width: 40rem;
+    margin: 0 0 0 auto;
+    justify-items: end;
+    text-align: right;
+    padding-top: 0;
+    border-top: 0;
+  }
+  & .zitat blockquote p {
+    font-size: var(--step-2);
+    font-style: italic;
+    font-weight: 400;
+  }
+  & .zitat figcaption strong {
+    font-weight: 500;
+  }
+  & .zitat figcaption strong::before {
+    content: '— ';
+  }
+  & .zitat figcaption span {
+    font-style: italic;
+  }
+
+  /* Abschluss: Zusammenfassung im doppelt gerahmten Kasten statt dunkler Fläche */
+  & .cta.dunkel {
+    background: var(--blatt);
+    color: var(--tinte);
+    --ink-2: #554c44;
+    --line: var(--tinte);
+    --on-salbei-2: #554c44;
+    color-scheme: light;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    justify-items: stretch;
+    align-items: center;
+    gap: 2rem 4rem;
+    text-align: left;
+    border: 3px double var(--tinte);
+  }
+  & .cta::before {
+    display: none;
+  }
+  & .cta__text {
+    justify-items: start;
+  }
+  & .cta__text .h2 {
+    font-style: italic;
+  }
+  & .cta__aktionen {
+    justify-content: flex-end;
+  }
+  & .cta__zeiten {
+    text-align: right;
+    font-style: italic;
+  }
+
+  /* Fuß als Kolophon */
+  & .footer {
+    background: var(--papier-2);
+    border-top: 3px double var(--tinte);
+  }
+  & .footer__marke p {
+    font-style: italic;
+  }
+  & .footer__bottom {
+    border-top: 1px solid var(--tinte);
+  }
+
+  /* Unterseiten: Kapitelanfang */
+  & .intro__inner {
+    justify-items: stretch;
+    text-align: left;
+    gap: clamp(2rem, 1rem + 3vw, 3.5rem);
+  }
+  & .intro__text {
+    justify-items: start;
+    gap: 1.2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--tinte);
+  }
+  & .intro__text .lead {
+    margin-inline: 0;
+  }
+  & .intro__kapitel {
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--rost);
+  }
+  & .intro .eyebrow {
+    display: none;
+  }
+  & .intro h1 {
+    max-width: 20ch;
+  }
+  & .intro__bild {
+    max-width: none;
+  }
+  & .intro__bild .img-frame {
+    aspect-ratio: 21 / 8;
+    border-radius: 0;
+  }
+
+  /* Leistungen: Inhaltsverzeichnis und nummerierte Unterkapitel */
+  & .sprung ul {
+    counter-reset: verzeichnis;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 3rem;
+  }
+  & .sprung a {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0;
+    border: 0;
+    border-bottom: 1px dotted var(--salbei-mittel);
+    border-radius: 0;
+    font-weight: 400;
+    font-size: var(--step-0);
+  }
+  & .sprung a::before {
+    counter-increment: verzeichnis;
+    content: '1.' counter(verzeichnis);
+    min-width: 2.2rem;
+    color: var(--rost);
+  }
+  & .sprung a:hover {
+    background: none;
+    font-style: italic;
+  }
+  & .eintrag {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    padding-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+    border-top: 1px solid var(--tinte);
+  }
+  & .eintrag:nth-child(even) {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  }
+  & .eintrag:nth-child(even) .eintrag__bild {
+    order: 0;
+  }
+  & .eintrag__bild .img-frame {
+    border-radius: 0;
+  }
+  & .eintrag__nr {
+    display: block;
+    font-size: var(--step-1);
+    color: var(--rost);
+    line-height: 1;
+  }
+  & .eintrag__kurz {
+    font-style: italic;
+  }
+  & .eintrag__details {
+    border-top: 1px dotted var(--salbei-mittel);
+  }
+  & .eckdaten dt {
+    font-style: italic;
+  }
+  & .eckdaten dd {
+    font-weight: 500;
+  }
+  & .hinweis {
+    background: var(--papier-2);
+    border-top: 1px solid var(--tinte);
+    border-bottom: 1px solid var(--tinte);
+  }
+  & .hinweis .h3::before {
+    content: 'Merke ';
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.76rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--rost);
+  }
+
+  /* Praxis: Personen wie Lexikoneinträge, Initiale als Schmuckbuchstabe */
+  & .person.karte {
+    background: none;
+    border: 0;
+    border-top: 1px solid var(--tinte);
+    padding-inline: 0;
+  }
+  & .person__initialen {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    font-size: 3.2rem;
+    line-height: 0.9;
+    font-style: italic;
+    color: var(--rost);
+  }
+  & .person__name {
+    font-weight: 500;
+  }
+  & .person__rolle {
+    font-style: italic;
+  }
+  & .person__schwerpunkte {
+    gap: 0;
+    font-style: italic;
+    color: var(--ink-2);
+  }
+  & .person__schwerpunkte::before {
+    content: 'Schwerpunkte: ';
+    margin-right: 0.3em;
+    font-style: normal;
+    color: var(--ink);
+  }
+  & .person__schwerpunkte li {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    font-size: inherit;
+  }
+  & .person__schwerpunkte li:not(:last-child)::after {
+    content: ',\00a0';
+  }
+  & .raum__bild .img-frame {
+    aspect-ratio: 4 / 3;
+    border-radius: 0;
+  }
+  & .raum__titel {
+    font-style: italic;
+  }
+  & .anfahrt {
+    border-top: 1px solid var(--tinte);
+    border-bottom: 1px solid var(--tinte);
+  }
+  & .anfahrt address {
+    font-weight: 500;
+  }
+
+  /* Ihr Termin: Schritte als nummerierte Absätze, Fragen wie im Prüfungsteil */
+  & .phase.karte {
+    background: none;
+    border: 0;
+    border-top: 1px solid var(--tinte);
+    padding-inline: 0;
+  }
+  & .phase__nr {
+    font-weight: 500;
+    color: var(--rost);
+  }
+  & .phase__titel {
+    font-style: italic;
+  }
+  & .kosten__eintrag h3 {
+    font-style: italic;
+  }
+  & details,
+  & details:first-child {
+    border-color: var(--salbei-mittel);
+    border-style: dotted;
+    border-width: 0 0 1px;
+  }
+  & .faq__liste {
+    counter-reset: frage;
+    border-top: 1px solid var(--tinte);
+  }
+  & summary {
+    font-weight: 400;
+    font-style: italic;
+    padding-left: 2.2rem;
+  }
+  & summary::before {
+    counter-increment: frage;
+    content: counter(frage) '.';
+    position: absolute;
+    left: 0;
+    font-style: normal;
+    color: var(--rost);
+  }
+  & summary::after {
+    width: auto;
+    height: auto;
+    top: 1.15rem;
+    border-radius: 0;
+    background: none;
+    color: var(--tinte);
+    font-style: normal;
+  }
+
+  /* Kontakt: Formular wie ein ausgefülltes Blatt, Felder als Linien */
+  & .kontakt__info .karte {
+    background: none;
+    border: 0;
+    border-top: 1px solid var(--tinte);
+    padding: 1rem 0 0.5rem;
+  }
+  & .gross {
+    color: var(--tinte);
+    font-style: italic;
+  }
+  & .formular {
+    background: var(--blatt);
+    border: 1px solid var(--tinte);
+    box-shadow: 0.5rem 0.5rem 0 var(--papier-2);
+  }
+  & .formular label,
+  & .formular legend {
+    font-weight: 500;
+  }
+  & .formular input[type='text'],
+  & .formular input[type='email'],
+  & .formular input[type='tel'],
+  & .formular select,
+  & .formular textarea {
+    padding: 0.55rem 0.1rem;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--tinte);
+    border-radius: 0;
+  }
+  & .formular textarea {
+    border: 1px solid var(--tinte);
+    padding: 0.6rem 0.75rem;
+  }
+  & .formular input:focus,
+  & .formular select:focus,
+  & .formular textarea:focus {
+    box-shadow: 0 1px 0 var(--rost);
+    border-color: var(--rost);
+  }
+  & .chip span {
+    border-color: var(--tinte);
+    border-radius: 0;
+  }
+  & .chip:hover span {
+    border-color: var(--rost);
+  }
+  & .chip input:checked + span {
+    background: var(--tinte);
+    border-color: var(--tinte);
+    color: var(--papier);
+  }
+  & .chip input:focus-visible + span {
+    outline-color: var(--rost);
+  }
+  & .check input {
+    accent-color: var(--tinte);
+  }
+  & .meldung {
+    border-radius: 0;
+    background: var(--papier-2);
+    color: var(--tinte);
+  }
+
+  @media (max-width: 60rem) {
+    & .hero__inner,
+    & .ablauf,
+    & .eintrag,
+    & .eintrag:nth-child(even),
+    & .cta.dunkel {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    & .ablauf__bild .img-frame {
+      aspect-ratio: 4 / 3;
+    }
+    & .cta__aktionen {
+      justify-content: flex-start;
+    }
+    & .cta__zeiten {
+      text-align: left;
+    }
+  }
+  @media (max-width: 48rem) {
+    & .leistungen,
+    & .sprung ul {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    & .zitat {
+      margin-left: 0;
+    }
+    & .intro__bild .img-frame {
+      aspect-ratio: 4 / 3;
+    }
+  }
+}

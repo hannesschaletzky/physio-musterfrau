@@ -1,0 +1,100 @@
+---
+// Lehrbuch-Tafel: die Wirbelsäule von der Seite (vorn links, hinten rechts).
+// Die Wirbel werden zur Bauzeit entlang einer S-Kurve gesetzt, so bleibt die Zeichnung ohne style-Attribute.
+interface Props {
+  class?: string;
+}
+const { class: klasse } = Astro.props;
+
+const abschnitte = [
+  { name: 'Halswirbelsäule', kurz: 'C', anzahl: 7, h: [9, 11], b: [20, 25] },
+  { name: 'Brustwirbelsäule', kurz: 'Th', anzahl: 12, h: [12, 16], b: [26, 34] },
+  { name: 'Lendenwirbelsäule', kurz: 'L', anzahl: 5, h: [18, 21], b: [38, 44] },
+];
+
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const runde = (n: number) => Math.round(n * 10) / 10;
+
+// Erst die Höhen stapeln, dann die seitliche Lage aus der Position auf der Kurve berechnen
+const luecke = 4.5;
+let y = 34;
+const roh = abschnitte.flatMap((a, ai) =>
+  Array.from({ length: a.anzahl }, (_, i) => {
+    const t = a.anzahl === 1 ? 0 : i / (a.anzahl - 1);
+    const h = lerp(a.h[0], a.h[1], t);
+    const w = lerp(a.b[0], a.b[1], t);
+    y += h / 2;
+    const wirbel = { ai, h, w, y };
+    y += h / 2 + luecke;
+    return wirbel;
+  }),
+);
+const y0 = roh[0].y;
+const yEnde = roh[roh.length - 1].y;
+const mitte = 132;
+const ausschlag = 17;
+const kurve = (yy: number) => {
+  const t = (yy - y0) / (yEnde - y0);
+  const x = mitte - ausschlag * Math.sin(3 * Math.PI * t);
+  const steigung = (-ausschlag * 3 * Math.PI * Math.cos(3 * Math.PI * t)) / (yEnde - y0);
+  return { x, winkel: (-Math.atan(steigung) * 180) / Math.PI };
+};
+const wirbel = roh.map((w) => ({ ...w, ...kurve(w.y) }));
+
+// Kreuzbein unter dem letzten Lendenwirbel
+const l5 = wirbel[wirbel.length - 1];
+const kx = l5.x;
+const ky = l5.y + l5.h / 2 + luecke;
+const kreuzbein = `M${runde(kx - 21)} ${runde(ky)} L${runde(kx + 23)} ${runde(ky)} Q${runde(kx + 46)} ${runde(ky + 42)} ${runde(kx + 36)} ${runde(ky + 80)} L${runde(kx + 25)} ${runde(ky + 90)} Q${runde(kx + 2)} ${runde(ky + 52)} ${runde(kx - 21)} ${runde(ky)}Z`;
+const steissbein = `M${runde(kx + 27)} ${runde(ky + 93)} q4 9 -1 16`;
+
+// Beschriftungen rechts, mit Hinweislinie zur Mitte jedes Abschnitts
+const labelX = 252;
+const beschriftungen = [
+  ...abschnitte.map((a, ai) => {
+    const teil = wirbel.filter((w) => w.ai === ai);
+    const m = teil[Math.floor(teil.length / 2)];
+    return { nr: ai + 1, name: a.name, zusatz: `${a.anzahl} Wirbel, ${a.kurz}1–${a.kurz}${a.anzahl}`, vonX: m.x + m.w / 2 + m.w * 0.6 + 6, vonY: m.y };
+  }),
+  { nr: 4, name: 'Kreuzbein', zusatz: 'fünf verwachsene Wirbel', vonX: kx + 44, vonY: ky + 40 },
+];
+const zeilenY = beschriftungen.map((b) => runde(b.vonY + 5));
+const hoehe = Math.ceil(ky + 120);
+---
+
+<svg class:list={['anatomie', klasse]} viewBox={`0 0 420 ${hoehe}`} role="img" aria-labelledby="anatomie-titel">
+  <title id="anatomie-titel">Zeichnung der Wirbelsäule von der Seite mit Hals-, Brust- und Lendenwirbelsäule und Kreuzbein</title>
+  <text class="anatomie__richtung" x="60" y="18" text-anchor="middle">vorn</text>
+  <text class="anatomie__richtung" x="205" y="18" text-anchor="middle">hinten</text>
+  <g class="anatomie__wirbel">
+    {
+      wirbel.map((w) => (
+        <g transform={`translate(${runde(w.x)} ${runde(w.y)}) rotate(${runde(w.winkel)})`}>
+          <path d={`M${runde(w.w / 2 - 2)} ${runde(-w.h * 0.25)} l${runde(w.w * 0.6)} ${runde(w.h * 0.55)} l-3 ${runde(w.h * 0.4)} z`} />
+          <rect x={runde(-w.w / 2)} y={runde(-w.h / 2)} width={runde(w.w)} height={runde(w.h)} rx={runde(w.h * 0.3)} />
+        </g>
+      ))
+    }
+    <path d={kreuzbein} />
+    <path d={steissbein} fill="none" />
+  </g>
+  <g class="anatomie__beschriftung">
+    {
+      beschriftungen.map((b, i) => (
+        <g>
+          <path class="anatomie__linie" d={`M${runde(b.vonX)} ${runde(b.vonY)} L${labelX - 16} ${zeilenY[i] - 5}`} />
+          <circle class="anatomie__punkt" cx={runde(b.vonX)} cy={runde(b.vonY)} r="2" />
+          <text class="anatomie__nr" x={labelX - 4} y={zeilenY[i]} text-anchor="end">
+            {b.nr}
+          </text>
+          <text class="anatomie__name" x={labelX + 4} y={zeilenY[i]}>
+            {b.name}
+          </text>
+          <text class="anatomie__zusatz" x={labelX + 4} y={zeilenY[i] + 17}>
+            {b.zusatz}
+          </text>
+        </g>
+      ))
+    }
+  </g>
+</svg>

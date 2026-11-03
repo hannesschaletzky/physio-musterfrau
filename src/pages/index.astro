@@ -3,7 +3,9 @@ import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Arrow from '../components/Arrow.astro';
 import TerminCta from '../components/TerminCta.astro';
-import { praxis } from '../data/praxis';
+import Anatomie from '../components/Anatomie.astro';
+import Winkel from '../components/Winkel.astro';
+import { praxis, euro } from '../data/praxis';
 import { leistungen } from '../data/leistungen';
 import heroBild from '../assets/images/hero-ruecken.jpg';
 import raumBild from '../assets/images/behandlungsraum.jpg';
@@ -24,6 +26,25 @@ const schritte = [
 ];
 
 const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und privat', 'Barrierefrei mit Aufzug', 'Parkplätze im Hof'];
+
+// Nur im Stil Trainingsplan: ein Beispiel-Übungsplan, wie ihn Patientinnen und Patienten mitbekommen
+const uebungen = [
+  { name: 'Beckenbrücke', menge: '3 × 12', pause: '30 s' },
+  { name: 'Seitstütz', menge: '3 × 20 s', pause: '45 s' },
+  { name: 'Kniebeuge am Stuhl', menge: '3 × 10', pause: '60 s' },
+  { name: 'Rudern mit Band', menge: '3 × 15', pause: '30 s' },
+];
+const wochen = 6;
+const aktuelleWoche = 3;
+
+// Nur im Stil Ruhepuls: Atemtakt 4 – 7 – 8
+const atemtakt = [
+  { sekunden: 4, was: 'einatmen' },
+  { sekunden: 7, was: 'halten' },
+  { sekunden: 8, was: 'ausatmen' },
+];
+
+const nr = (i: number) => String(i + 1).padStart(2, '0');
 ---
 
 <BaseLayout
@@ -47,21 +68,77 @@ const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und p
           {versprechen.map((v) => <li>{v}</li>)}
         </ul>
       </div>
-      <div class="hero__bild img-frame">
-        <Picture
-          src={heroBild}
-          alt="Zwei Hände liegen ruhig auf dem oberen Rücken einer Patientin im Strickpullover"
-          widths={[420, 640, 860, 1080]}
-          sizes="(min-width: 60rem) 38vw, 92vw"
-          formats={['avif', 'webp']}
-          loading="eager"
-          fetchpriority="high"
-        />
+
+      <div class="hero__buehne">
+        <svg class="hero__welle nur-ruhepuls" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <path
+            d="M0 80 C 120 80 160 52 260 52 S 400 108 520 108 S 620 80 660 80 L 690 80 L 705 38 L 722 122 L 738 62 L 750 80 L 780 80 C 840 80 900 108 1000 108 S 1140 52 1240 52 S 1380 80 1440 80"
+          ></path>
+        </svg>
+        <figure class="hero__bild">
+          <div class="img-frame">
+            <Picture
+              src={heroBild}
+              alt="Zwei Hände liegen ruhig auf dem oberen Rücken einer Patientin im Strickpullover"
+              widths={[420, 640, 860, 1080]}
+              sizes="(min-width: 60rem) 38vw, 92vw"
+              formats={['avif', 'webp']}
+              loading="eager"
+              fetchpriority="high"
+            />
+          </div>
+        </figure>
+
+        <figure class="tafel nur-lehrbuch">
+          <Anatomie />
+          <figcaption class="abb"><span>Abb. 1</span> Die Wirbelsäule von der Seite. Hier beginnen die meisten Rückenbeschwerden.</figcaption>
+        </figure>
+
+        <div class="plan nur-trainingsplan" role="group" aria-labelledby="plan-titel">
+          <div class="plan__kopf">
+            <span id="plan-titel">Übungsplan · Rücken</span>
+            <span>Woche {aktuelleWoche} / {wochen}</span>
+          </div>
+          <table class="plan__tabelle">
+            <thead>
+              <tr>
+                <th scope="col">Übung</th>
+                <th scope="col">Menge</th>
+                <th scope="col">Pause</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                uebungen.map((u, i) => (
+                  <tr>
+                    <th scope="row">
+                      <span class="plan__nr" aria-hidden="true">
+                        {nr(i)}
+                      </span>
+                      {u.name}
+                    </th>
+                    <td>{u.menge}</td>
+                    <td>{u.pause}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+          <ol class="plan__wochen" aria-label="Fortschritt">
+            {
+              Array.from({ length: wochen }, (_, i) => (
+                <li class:list={{ fertig: i < aktuelleWoche - 1, jetzt: i === aktuelleWoche - 1 }} aria-current={i === aktuelleWoche - 1 ? 'step' : undefined}>
+                  W{i + 1}
+                </li>
+              ))
+            }
+          </ol>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section weiss" aria-labelledby="leistungen-titel">
+  <section class="section weiss sektion-leistungen" aria-labelledby="leistungen-titel">
     <div class="container">
       <div class="kopf">
         <span class="eyebrow">Leistungen</span>
@@ -69,10 +146,27 @@ const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und p
       </div>
       <ul class="leistungen">
         {
-          leistungen.map((l) => (
+          leistungen.map((l, i) => (
             <li class="leistung reveal">
+              <span class="leistung__nr" aria-hidden="true">
+                {nr(i)}
+              </span>
               <h3 class="leistung__titel">{l.titel}</h3>
-              <p>{l.kurz}</p>
+              <p class="leistung__kurz">{l.kurz}</p>
+              <dl class="leistung__daten">
+                <div>
+                  <dt>Dauer</dt>
+                  <dd>{l.dauer}</dd>
+                </div>
+                <div>
+                  <dt>{l.rezept ? 'Kasse' : 'Kurs'}</dt>
+                  <dd>{l.rezept ? 'mit Rezept' : 'Zuschuss möglich'}</dd>
+                </div>
+                <div>
+                  <dt>Selbstzahler</dt>
+                  <dd class="zahlen">{euro(l.preis)}</dd>
+                </div>
+              </dl>
               <a href={`/leistungen/#${l.id}`} class="link-pfeil">
                 Mehr erfahren <span class="visually-hidden">über {l.titel}</span>
                 <Arrow />
@@ -84,17 +178,46 @@ const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und p
     </div>
   </section>
 
-  <section class="section" aria-labelledby="ablauf-titel">
-    <div class="container ablauf">
-      <div class="ablauf__bild img-frame">
-        <Picture
-          src={raumBild}
-          alt="Heller Behandlungsraum mit Therapieliege vor einem großen Fenster"
-          widths={[480, 720, 960]}
-          sizes="(min-width: 60rem) 45vw, 92vw"
-          formats={['avif', 'webp']}
-        />
+  <section class="atem nur-ruhepuls" aria-labelledby="atem-titel">
+    <div class="container atem__inner">
+      <div class="atem__kreis" aria-hidden="true"><span></span></div>
+      <div class="atem__text">
+        <h2 id="atem-titel" class="h2">Einmal durchatmen.</h2>
+        <p>
+          Vier Sekunden ein, sieben halten, acht aus. Mit dieser Atemübung beginnen viele unserer Behandlungen. Sie hilft auch zu Hause, wenn
+          der Nacken wieder hart wird.
+        </p>
+        <ol class="atem__takt">
+          {
+            atemtakt.map((t) => (
+              <li>
+                <span class="zahlen">{t.sekunden}</span> {t.was}
+              </li>
+            ))
+          }
+        </ol>
       </div>
+    </div>
+  </section>
+
+  <section class="section sektion-ablauf" aria-labelledby="ablauf-titel">
+    <div class="container ablauf">
+      <figure class="ablauf__bild">
+        <div class="img-frame">
+          <Picture
+            src={raumBild}
+            alt="Heller Behandlungsraum mit Therapieliege vor einem großen Fenster"
+            widths={[480, 720, 960]}
+            sizes="(min-width: 60rem) 45vw, 92vw"
+            formats={['avif', 'webp']}
+          />
+        </div>
+        <figcaption class="abb nur-lehrbuch" aria-hidden="true"><span>Abb. 2</span> Einer der drei Behandlungsräume, mit Tür statt Vorhang.</figcaption>
+      </figure>
+      <figure class="ablauf__winkel nur-trainingsplan">
+        <Winkel />
+        <figcaption>Beispiel: Beugung im Knie nach einer Knie-OP, gemessen in Woche 1 und Woche 6</figcaption>
+      </figure>
       <div class="ablauf__text">
         <span class="eyebrow">So läuft es ab</span>
         <h2 id="ablauf-titel" class="h2">In drei Schritten <em>zur Behandlung</em></h2>
@@ -113,13 +236,17 @@ const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und p
             ))
           }
         </ol>
+        <aside class="merke nur-lehrbuch" aria-label="Merke">
+          <strong>Merke</strong>
+          <p>Ein Rezept muss innerhalb von 28 Tagen nach Ausstellung bei uns beginnen. Danach verfällt es.</p>
+        </aside>
         <a href="/ihr-termin/" class="link-pfeil">Alles zu Rezept, Kosten und Ablauf <Arrow /></a>
       </div>
     </div>
   </section>
 
   <section class="section--zitat container" aria-label="Über die Praxis">
-    <figure class="zitat hell">
+    <figure class="zitat">
       <blockquote>
         <p>
           „Ich möchte, dass Sie nach jeder Stunde wissen, was wir gemacht haben und warum. Wer versteht, was im Körper passiert, bleibt
@@ -138,84 +265,299 @@ const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und p
 </BaseLayout>
 
 <style>
+  /* Ruhepuls: alles mittig, ein rundes Foto auf der Pulslinie, darüber atmende Ringe */
   .hero__inner {
     display: grid;
-    grid-template-columns: 1.2fr 0.85fr;
-    gap: clamp(2rem, 1rem + 4vw, 5rem);
-    align-items: center;
-    padding-top: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+    justify-items: center;
+    gap: clamp(2rem, 1rem + 3vw, 3.5rem);
+    padding-top: clamp(2rem, 1rem + 4vw, 4.5rem);
     padding-bottom: var(--section);
+    text-align: center;
   }
   .hero__text {
     display: grid;
-    gap: 1.6rem;
-    justify-items: start;
+    gap: 1.5rem;
+    justify-items: center;
+    max-width: 50rem;
+  }
+  .hero__text .lead {
+    margin-inline: auto;
   }
   .hero__aktionen {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 0.75rem;
   }
   .hero__fakten {
     list-style: none;
-    margin: 0.5rem 0 0;
+    margin: 0.75rem 0 0;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    justify-content: center;
+    gap: 0.35rem 1.5rem;
+    color: var(--ink-2);
+    font-size: 0.95rem;
   }
   .hero__fakten li {
-    padding: 0.35rem 0.85rem;
-    border-radius: 999px;
-    background: var(--salbei-hell);
-    color: var(--salbei-3);
-    font-size: 0.9rem;
-    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  .hero__fakten li::before {
+    content: '';
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--salbei-mittel);
+  }
+  .hero__buehne {
+    position: relative;
+    order: -1;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    /* Platz für die äußeren Atemringe */
+    padding-block: 3.5rem;
+    margin-block: -1.5rem -1rem;
+  }
+  .hero__buehne > * {
+    grid-area: 1 / 1;
+  }
+  /* Die Linie läuft über die ganze Fensterbreite, ohne das Raster zu verbreitern */
+  .hero__welle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 100vw;
+    max-width: none;
+    height: clamp(5rem, 3rem + 6vw, 9rem);
+    fill: none;
+    stroke: var(--salbei-mittel);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+  .hero__welle path {
+    vector-effect: non-scaling-stroke;
   }
   .hero__bild {
-    aspect-ratio: 4 / 5;
-    border-radius: 12rem 12rem var(--radius-gross) var(--radius-gross);
+    position: relative;
+    margin: 0;
+    width: clamp(11rem, 7rem + 14vw, 19rem);
+    aspect-ratio: 1;
+  }
+  .hero__bild .img-frame {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0.6rem var(--sand);
+  }
+  .hero__bild::before,
+  .hero__bild::after {
+    content: '';
+    position: absolute;
+    inset: -1.6rem;
+    border: 1px solid var(--salbei-mittel);
+    border-radius: 50%;
+    background: var(--sand);
+  }
+  .hero__bild::after {
+    inset: -3.4rem;
+    opacity: 0.45;
+    background: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__bild::before,
+    .hero__bild::after {
+      animation: atmen 19s var(--ease) infinite;
+    }
+    .hero__bild::after {
+      animation-delay: -0.6s;
+    }
   }
 
+  @keyframes atmen {
+    0%,
+    100% {
+      transform: scale(0.96);
+    }
+    21%,
+    58% {
+      transform: scale(1.04);
+    }
+  }
+
+  /* Leistungen als ruhige Zeilen statt Karten */
   .leistungen {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
+    border-top: 1px solid var(--line);
   }
   .leistung {
+    position: relative;
     display: grid;
-    gap: 0.8rem;
-    align-content: start;
-    padding: 1.75rem;
-    border-radius: var(--radius);
-    background: var(--sand);
-    transition: background-color 0.25s var(--ease);
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr) auto;
+    gap: 0.5rem 3rem;
+    align-items: baseline;
+    padding: 1.6rem 1rem;
+    border-bottom: 1px solid var(--line);
+    transition: background-color 0.3s var(--ease);
   }
   .leistung:hover {
-    background: var(--salbei-hell);
+    background: var(--sand);
+  }
+  .leistung__nr,
+  .leistung__daten {
+    display: none;
   }
   .leistung__titel {
-    font-size: var(--step-1);
+    font-size: var(--step-2);
+    font-weight: 300;
   }
-  .leistung p {
+  .leistung__kurz {
     color: var(--ink-2);
   }
   .leistung .link-pfeil {
-    margin-top: 0.4rem;
+    white-space: nowrap;
+  }
+  /* Die ganze Zeile ist klickbar */
+  .leistung .link-pfeil::after {
+    content: '';
+    position: absolute;
+    inset: 0;
   }
 
+  /* Atempause mit Kreis im Takt 4 – 7 – 8 (19 Sekunden) */
+  .atem {
+    padding-block: var(--section);
+  }
+  .atem__inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 30rem);
+    justify-content: center;
+    align-items: center;
+    gap: clamp(2.5rem, 1rem + 6vw, 7rem);
+  }
+  .atem__kreis {
+    display: grid;
+    place-items: center;
+    width: clamp(11rem, 8rem + 10vw, 17rem);
+    aspect-ratio: 1;
+    border: 1px dashed var(--salbei-mittel);
+    border-radius: 50%;
+  }
+  .atem__kreis span {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, var(--salbei-hell), var(--salbei-mittel));
+    transform: scale(0.55);
+  }
+  .atem__text {
+    display: grid;
+    gap: 1.2rem;
+  }
+  .atem__text p {
+    color: var(--ink-2);
+  }
+  .atem__takt {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: flex;
+    gap: 2rem;
+    color: var(--ink-3);
+  }
+  .atem__takt li {
+    display: grid;
+    font-size: 0.95rem;
+  }
+  .atem__takt .zahlen {
+    font-family: var(--font-display-stack);
+    font-size: var(--step-3);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--salbei);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .atem__kreis span {
+      animation: atemkreis 19s linear infinite;
+    }
+    .atem__takt li {
+      animation: atemtakt 19s linear infinite;
+    }
+    .atem__takt li:nth-child(2) {
+      animation-name: atemtakt-halten;
+    }
+    .atem__takt li:nth-child(3) {
+      animation-name: atemtakt-aus;
+    }
+  }
+  @keyframes atemkreis {
+    0% {
+      transform: scale(0.55);
+    }
+    21% {
+      transform: scale(1);
+    }
+    58% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.55);
+    }
+  }
+  @keyframes atemtakt {
+    0%,
+    20% {
+      color: var(--ink);
+    }
+    22%,
+    100% {
+      color: var(--ink-3);
+    }
+  }
+  @keyframes atemtakt-halten {
+    0%,
+    20%,
+    59%,
+    100% {
+      color: var(--ink-3);
+    }
+    22%,
+    57% {
+      color: var(--ink);
+    }
+  }
+  @keyframes atemtakt-aus {
+    0%,
+    57% {
+      color: var(--ink-3);
+    }
+    59%,
+    99% {
+      color: var(--ink);
+    }
+  }
+
+  /* Ablauf: Schritte an einer feinen Linie, das Foto als hohe Pille */
   .ablauf {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
     gap: clamp(2rem, 1rem + 5vw, 6rem);
     align-items: center;
   }
   .ablauf__bild {
-    aspect-ratio: 4 / 5;
-    border-radius: var(--radius-gross);
+    margin: 0;
+  }
+  .ablauf__bild .img-frame {
+    aspect-ratio: 3 / 4;
+    border-radius: 999px;
   }
   .ablauf__text {
     display: grid;
@@ -223,16 +565,26 @@ const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und p
     justify-items: start;
   }
   .schritte {
+    position: relative;
     list-style: none;
     margin: 0.5rem 0;
     padding: 0;
     display: grid;
-    gap: 1.5rem;
+    gap: 2rem;
+  }
+  .schritte::before {
+    content: '';
+    position: absolute;
+    left: 1.375rem;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    border-left: 1px solid var(--salbei-mittel);
   }
   .schritte li {
+    position: relative;
     display: grid;
-    grid-template-columns: 2.75rem 1fr;
-    gap: 1.1rem;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 1.25rem;
   }
   .schritte__nr {
     display: grid;
@@ -240,10 +592,11 @@ const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und p
     width: 2.75rem;
     height: 2.75rem;
     border-radius: 50%;
-    background: var(--salbei);
-    color: #fff;
+    border: 1px solid var(--salbei-mittel);
+    background: var(--sand);
+    color: var(--salbei);
     font-family: var(--font-display-stack);
-    font-size: 1.15rem;
+    font-size: 1.1rem;
   }
   .schritte h3 {
     font-size: var(--step-1);
@@ -253,16 +606,19 @@ const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und p
     color: var(--ink-2);
   }
 
+  /* Zitat frei stehend und mittig */
   .section--zitat {
     padding-bottom: var(--section);
   }
   .zitat {
-    margin: 0;
+    margin: 0 auto;
+    max-width: 52rem;
     display: grid;
     gap: 1.5rem;
-    justify-items: start;
-    padding: clamp(2rem, 1rem + 4vw, 4.5rem);
-    border-radius: var(--radius-gross);
+    justify-items: center;
+    text-align: center;
+    padding-top: clamp(2rem, 1rem + 3vw, 3.5rem);
+    border-top: 1px solid var(--line);
   }
   .zitat blockquote {
     margin: 0;
@@ -271,8 +627,7 @@ const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und p
     font-family: var(--font-display-stack);
     font-size: var(--step-2);
     font-weight: 300;
-    line-height: 1.35;
-    max-width: 34em;
+    line-height: 1.4;
   }
   .zitat figcaption {
     display: grid;
@@ -282,28 +637,26 @@ const versprechen = ['Termine meist noch in derselben Woche', 'Alle Kassen und p
     color: var(--ink-2);
   }
 
-  @media (max-width: 64rem) {
-    .leistungen {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
   @media (max-width: 60rem) {
-    .hero__inner,
-    .ablauf {
-      grid-template-columns: 1fr;
+    .ablauf,
+    .atem__inner {
+      grid-template-columns: minmax(0, 1fr);
     }
-    .hero__bild {
+    .atem__inner {
+      justify-items: center;
+      text-align: center;
+    }
+    .atem__takt {
+      justify-content: center;
+    }
+    .ablauf__bild .img-frame {
       aspect-ratio: 4 / 3;
       border-radius: var(--radius-gross);
       max-width: 36rem;
     }
-    .ablauf__bild {
-      aspect-ratio: 4 / 3;
-    }
-  }
-  @media (max-width: 40rem) {
-    .leistungen {
-      grid-template-columns: 1fr;
+    .leistung {
+      grid-template-columns: minmax(0, 1fr);
+      padding-inline: 0;
     }
   }
 </style>
