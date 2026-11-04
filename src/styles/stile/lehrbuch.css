@@ -217,6 +217,29 @@
     --demobar-bg: var(--tinte);
     --demobar-fg: var(--papier);
   }
+  /* Hinweis wie eine Randnotiz */
+  & .stilhinweis {
+    --hinweis-bg: var(--blatt);
+    --hinweis-rand: var(--tinte);
+    border-radius: 0;
+    box-shadow: 0.4rem 0.4rem 0 var(--papier-2);
+    font-style: italic;
+  }
+  & .stilhinweis::before {
+    border-top-left-radius: 0;
+  }
+  & .stilhinweis strong {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--rost);
+  }
+  & .stilhinweis__zu {
+    border-radius: 0;
+    background: none;
+  }
   & .header {
     background: color-mix(in srgb, var(--papier) 94%, transparent);
     border-bottom: 3px double var(--tinte);

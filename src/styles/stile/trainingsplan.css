@@ -200,6 +200,31 @@
     --demobar-bg: var(--graphit);
     --demobar-fg: var(--blatt);
   }
+  /* Hinweis wie ein Etikett: Mono, eckig, harter Schatten */
+  & .stilhinweis {
+    --hinweis-bg: var(--blatt);
+    --hinweis-rand: var(--graphit);
+    border-width: 1.5px;
+    border-radius: 0;
+    box-shadow: 0.35rem 0.35rem 0 var(--graphit);
+    font-size: 0.85rem;
+  }
+  & .stilhinweis::before {
+    border-width: 1.5px;
+    border-top-left-radius: 0;
+  }
+  & .stilhinweis strong {
+    font-family: var(--font-mono-stack);
+    font-size: 0.74rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  & .stilhinweis__zu {
+    border-radius: 0;
+    background: var(--graphit);
+    color: var(--blatt);
+  }
   & .header {
     background: color-mix(in srgb, var(--blatt) 94%, transparent);
     border-bottom: 2px solid var(--graphit);
