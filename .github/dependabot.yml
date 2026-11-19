@@ -10,6 +10,12 @@ updates:
     groups:
       npm:
         update-types: [minor, patch]
+    # TypeScript 7 erst, wenn @astrojs/check es unterstützt: 0.9.12 verlangt typescript "^5.0.0 || ^6.0.0",
+    # mit 7 bricht schon npm ci ab (ERESOLVE). Peer-Angabe:
+    # https://github.com/withastro/astro/blob/main/packages/language-tools/astro-check/package.json
+    ignore:
+      - dependency-name: typescript
+        versions: [">=7"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
